@@ -21,7 +21,7 @@ namespace na
 
 		// This function is based on the paper
 		//   Walter F. Mascarenhas, "Fast and accurate normalization of vectors and quaternions"
-		template <typename Scalar, int Rows, typename Real = na::floating_point_scalar<Scalar>::value_type>
+		template <typename Scalar, int Rows, typename Real = typename na::floating_point_scalar<Scalar>::value_type>
 		inline void scale(
 			Eigen::Vector<Scalar, Rows>& x,
 			Real& coeff)
@@ -51,7 +51,7 @@ namespace na
 			}
 		}
 
-		template <typename Scalar, int Rows, typename Real = na::floating_point_scalar<Scalar>::value_type>
+		template <typename Scalar, int Rows, typename Real = typename na::floating_point_scalar<Scalar>::value_type>
 		inline void scale(Eigen::Vector<Scalar, Rows>& x)
 		{
 			Real m = x.cwiseAbs().maxCoeff();
@@ -68,7 +68,7 @@ namespace na
 			}
 		}
 
-		template <typename Scalar, int Rows, typename Real = na::floating_point_scalar<Scalar>::value_type>
+		template <typename Scalar, int Rows, typename Real = typename na::floating_point_scalar<Scalar>::value_type>
 		inline Real norm(const Eigen::Vector<Scalar, Rows>& x)
 		{
 			Real coeff;

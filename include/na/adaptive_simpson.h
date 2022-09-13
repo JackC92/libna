@@ -22,20 +22,16 @@ namespace na
 			const Scalar fm,
 			const int depth)
 		{
-			typedef typename na::floating_point_scalar<Scalar>::value_type value_type;
+			typedef typename na::floating_point_scalar<Scalar>::value_type Real;
 			double m = 0.5 * (a + b), h = 0.5 * (b - a);
 			double lm = 0.5 * (a + m), rm = 0.5 * (m + b);
-			if ((0.5 * tol == tol) || (a == lm))
-			{
-				return whole;
-			}
 			Scalar flm = f(lm), frm = f(rm);
 			Scalar left = (h / 6.0) * (fa + 4.0 * flm + fm);
 			Scalar right = (h / 6.0) * (fm + 4.0 * frm + fb);
 			Scalar delta = (left + right) - whole;
 			if ((depth <= 0) || (std::abs(delta) <= 15.0 * tol))
 			{
-				return left + right + (delta / static_cast<value_type>(15.0));
+				return left + right + (delta / static_cast<Real>(15.0));
 			}
 			else
 			{
@@ -60,8 +56,8 @@ namespace na
 			return Scalar();
 		}
 		Scalar fa = f(a), fb = f(b), fm = f(0.5 * (a + b));
-		Scalar S = (h / 6.0) * (fa + 4.0 * fm + fb);
-		return na::internal::adaptive_simpson_aux(f, a, b, tol, S, fa, fb, fm, max_depth);
+		Scalar whole = (h / 6.0) * (fa + 4.0 * fm + fb);
+		return na::internal::adaptive_simpson_aux(f, a, b, tol, whole, fa, fb, fm, max_depth);
 	}
 }
 

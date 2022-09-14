@@ -106,7 +106,7 @@ namespace na
 		// Output parameters:
 		//   pol - the value of the Legendre polynomial at the point x
 		//   der - the value of the derivative of the Legendre polynomial at the point x
-		inline void evalpolyder(
+		void evalpolyder(
 			const int n,
 			const double x,
 			double& pol,

@@ -1,4 +1,5 @@
 #include "na/bspline.h"
+#include <cassert>
 #include "Eigen/Core"
 
 namespace na

@@ -1,4 +1,5 @@
 #include "na/linalg/qr.h"
+#include <cassert>
 #include <cmath>
 #include <complex>
 #include "Eigen/Core"

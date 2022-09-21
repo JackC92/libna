@@ -35,24 +35,21 @@
 //   quadrature - return the nodes and weights of the n-point Gauss-Legendre 
 //     quadrature rule
 //
-//   expncoefs - compute the vector (2) of the coefficients of one of more 
+//   expansion_coefficients - compute the vector (2) of the coefficients of one of more 
 //      expansions of the form (1) given the vectors of their scaled values (3)
 //
 //   interpolate - use barycentric interpolation to evaluate an expansion 
 //    of the form (1) given its *scaled* values at nodes of the n-point
 //    Gauss-Legendre quadrature rule
 //
-//   evalexpn - evaluate one or more expansions of the form (1) at a specified
-//     point given their coefficient vectors (2)
+//   evaluate_expansion - evaluate one or more expansions of the form (1) (and their
+//     derivatives) at a specified point given the vector (2) of coefficients
 //
-//   evalexpnder - evaluate one or more expansion of the form (1) and their
-//     derivatives at a specified point given the vector (2) of coefficients
-//
-//   interpmatrix - return an (m,n) matrix which takes the vector (3) of the
+//   interpolation_matrix - return an (m,n) matrix which takes the vector (3) of the
 //     *scaled* values of an expansion at the nodes of the n-point Gauss-Legendre rule
 //     to *scaled* values at a user-specified collection of points
 //
-//   coefsmatrix - return the (n,n) matrix which takes the vector (3) of 
+//   coefficient_matrix - return the (n,n) matrix which takes the vector (3) of 
 //     the *scaled* values of an expansion of the form (1) to the vector (2) of its
 //     coefficients -- note that this matrix is orthogonal and its transpose
 //     takes the vector (2) to the vector (3)
@@ -69,7 +66,7 @@ namespace na
 		// 
 		// Output parameters:
 		//   coefs - the coefficients of the Legendre polynomial
-		Eigen::VectorXd polycoefs(const int n);
+		Eigen::VectorXd polynomial_coefficients(const int n);
 
 		// Evaluate the Legendre polynomial of degree n at the point x
 		//
@@ -79,7 +76,7 @@ namespace na
 		// 
 		// Output parameters:
 		//   val - the value of the Legendre polynomial at the point x
-		double evalpoly(
+		double evaluate_polynomial(
 			const int n,
 			const double x);
 
@@ -92,7 +89,7 @@ namespace na
 		// 
 		// Output parameters:
 		//   val - the value of the Legendre polynomial at the point x
-		double evalder(
+		double evaluate_derivative(
 			const int n,
 			const double x);
 
@@ -106,7 +103,7 @@ namespace na
 		// Output parameters:
 		//   pol - the value of the Legendre polynomial at the point x
 		//   der - the value of the derivative of the Legendre polynomial at the point x
-		void evalpolyder(
+		void evaluate_polynomial(
 			const int n,
 			const double x,
 			double& pol,
@@ -134,7 +131,7 @@ namespace na
 		//
 		// Output parameters:
 		//   coefs - an array specifying the coefficients
-		Eigen::VectorXd expncoefs(
+		Eigen::VectorXd expansion_coefficients(
 			const int n,
 			const Eigen::VectorXd& vals);
 
@@ -148,7 +145,7 @@ namespace na
 		//
 		// Output parameters:
 		//   val - the value of the expansion at the point x
-		double evalexpn(
+		double evaluate_expansion(
 			const int n,
 			const Eigen::VectorXd& coefs,
 			const double x);
@@ -164,7 +161,7 @@ namespace na
 		// Output parameters:
 		//   pol - the value of the expansion at the point x
 		//   der - the value of the derivative of the expansion at the point x
-		void evalexpnder(
+		void evaluate_expansion(
 			const int n,
 			const Eigen::VectorXd& coefs,
 			const double x,
@@ -202,7 +199,7 @@ namespace na
 		//
 		// Output parameters:
 		//   ainterp - the (m,n) interpolation matrix
-		Eigen::MatrixXd interpmatrix(
+		Eigen::MatrixXd interpolation_matrix(
 			const int n,
 			const Eigen::VectorXd& xslege,
 			const Eigen::VectorXd& whtslege,
@@ -221,7 +218,7 @@ namespace na
 		//
 		// Output parameters:
 		//   umatr - the (n,n) matrix which takes values to coefficients
-		Eigen::MatrixXd coefsmatrix(
+		Eigen::MatrixXd coefficient_matrix(
 			const int n,
 			const Eigen::VectorXd& xslege,
 			const Eigen::VectorXd& whtslege);

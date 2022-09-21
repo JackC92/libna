@@ -12,7 +12,7 @@ namespace na
 		{
 			// Compute a (2,2) orthogonal matrix u which satisfies
 			//         u * (x, y)^' = (z, 0)^'
-			inline Eigen::Matrix2d qrrotmat(
+			inline Eigen::Matrix2d qr_rotation_matrix(
 				const double x,
 				const double y,
 				const double size)
@@ -36,7 +36,7 @@ namespace na
 
 			// Compute a (2,2) unitary matrix u which satisfies
 			//         u * (x, y)^' = (z, 0)^'
-			inline Eigen::Matrix2cd cqrrotmat(
+			inline Eigen::Matrix2cd cqr_rotation_matrix(
 				const Eigen::dcomplex& x,
 				const Eigen::dcomplex& y,
 				const double size)
@@ -60,7 +60,7 @@ namespace na
 			
 			// Apply the inverse of L to y, and multiply the result by Q on the left.
 			template <typename Scalar>
-			inline void qrapply(
+			inline void qr_apply(
 				const Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>& Q,
 				const Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>& L,
 				const Eigen::Vector<Scalar, Eigen::Dynamic>& y,
@@ -81,7 +81,7 @@ namespace na
 
 	namespace linalg
 	{
-		void qrdecomp(
+		void qr_factorize(
 			const Eigen::MatrixXd& A,
 			Eigen::MatrixXd& Q,
 			Eigen::MatrixXd& L)
@@ -97,23 +97,23 @@ namespace na
 			{
 				for (int j = n - 1; j > i; --j)
 				{
-					Eigen::Matrix2d u = na::internal::linalg::qrrotmat(L(i, i), L(i, j), size);
+					Eigen::Matrix2d u = na::internal::linalg::qr_rotation_matrix(L(i, i), L(i, j), size);
 					L(Eigen::seq(i, n - 1), { i, j }) = L(Eigen::seq(i, n - 1), { i, j }) * u;
 					Q(Eigen::placeholders::all, { i, j }) = Q(Eigen::placeholders::all, { i, j }) * u;
 				}
 			}
 		}
 
-		void qrsolve(
+		void qr_solve(
 			const Eigen::MatrixXd& Q,
 			const Eigen::MatrixXd& L,
 			const Eigen::VectorXd& y,
 			Eigen::VectorXd& x)
 		{
-			na::internal::linalg::qrapply(Q, L, y, x);
+			na::internal::linalg::qr_apply(Q, L, y, x);
 		}
 
-		void cqrdecomp(
+		void cqr_factorize(
 			const Eigen::MatrixXcd& A,
 			Eigen::MatrixXcd& Q,
 			Eigen::MatrixXcd& L)
@@ -129,20 +129,20 @@ namespace na
 			{
 				for (int j = n - 1; j > i; --j)
 				{
-					Eigen::Matrix2cd u = na::internal::linalg::cqrrotmat(L(i, i), L(i, j), size);
+					Eigen::Matrix2cd u = na::internal::linalg::cqr_rotation_matrix(L(i, i), L(i, j), size);
 					L(Eigen::seq(i, n - 1), { i, j }) = L(Eigen::seq(i, n - 1), { i, j }) * u;
 					Q(Eigen::placeholders::all, { i, j }) = Q(Eigen::placeholders::all, { i, j }) * u;
 				}
 			}
 		}
 
-		void cqrsolve(
+		void cqr_solve(
 			const Eigen::MatrixXcd& Q,
 			const Eigen::MatrixXcd& L,
 			const Eigen::VectorXcd& y,
 			Eigen::VectorXcd& x)
 		{
-			na::internal::linalg::qrapply(Q, L, y, x);
+			na::internal::linalg::qr_apply(Q, L, y, x);
 		}
 	}
 }

@@ -6,14 +6,14 @@ namespace na
 {
 	namespace bspline
 	{
-		Eigen::Vector3d eval(
+		Eigen::Vector3d evaluate(
 			const Eigen::MatrixXd& q,
 			const Eigen::VectorXd& T,
 			const int deg,
 			const int m,
 			const double s);
 
-		void eval_basis(
+		void evaluate_basis(
 			const Eigen::VectorXd& T,
 			const int deg,
 			const int m,
@@ -21,13 +21,13 @@ namespace na
 			int& mu,
 			Eigen::VectorXd& b);
 
-		Eigen::VectorXd eval_basis(
+		Eigen::VectorXd evaluate_basis(
 			const Eigen::VectorXd& T,
 			const int deg,
 			const int m,
 			const double s);
 
-		Eigen::MatrixXd eval_basis(
+		Eigen::MatrixXd evaluate_basis(
 			const Eigen::VectorXd& T,
 			const int deg,
 			const int m,

@@ -15,14 +15,14 @@ namespace na
 		// Output parameters:
 		//   Q - an (n,n) orthogonal matrix
 		//   L - an (n,n) lower triangular matrix
-		void qrdecomp(
+		void qr_factorize(
 			const Eigen::MatrixXd& A,
 			Eigen::MatrixXd& Q,
 			Eigen::MatrixXd& L);
 
 		// Compute the solution to the system of linear algebraic equations
 		// A * x = y, where the decomposition A = L * Q^' is decomposed by a
-		// previous call to qrdecomp().
+		// previous call to qr_factorize().
 		//
 		// Input parameters:
 		//   Q - an (n,n) orthogonal matrix
@@ -31,7 +31,7 @@ namespace na
 		//
 		// Output parameters:
 		//   x - the solution to the system of linear algebraic equations
-		void qrsolve(
+		void qr_solve(
 			const Eigen::MatrixXd& Q,
 			const Eigen::MatrixXd& L,
 			const Eigen::VectorXd& y,
@@ -46,14 +46,14 @@ namespace na
 		// Output parameters:
 		//   Q - an (n,n) unitary matrix
 		//   L - an (n,n) lower triangular matrix
-		void cqrdecomp(
+		void cqr_factorize(
 			const Eigen::MatrixXcd& A,
 			Eigen::MatrixXcd& Q,
 			Eigen::MatrixXcd& L);
 
 		// Compute the solution to the system of linear algebraic equations
 		// A * x = y, where the decomposition A = L * Q^* is decomposed by a
-		// previous call to cqrdecomp().
+		// previous call to cqr_factorize().
 		//
 		// Input parameters:
 		//   Q - an (n,n) unitary matrix
@@ -62,7 +62,7 @@ namespace na
 		//
 		// Output parameters:
 		//   x - the solution to the system of linear algebraic equations
-		void cqrsolve(
+		void cqr_solve(
 			const Eigen::MatrixXcd& Q,
 			const Eigen::MatrixXcd& L,
 			const Eigen::VectorXcd& y,

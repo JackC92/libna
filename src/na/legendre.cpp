@@ -10,7 +10,7 @@ namespace na
 	{
 		namespace legendre
 		{
-			inline void taylor(
+			inline void evaluate_taylor_series(
 				const double x,
 				const double h,
 				const int n,
@@ -84,7 +84,7 @@ namespace na
 				xptr -= i + ifodd;
 				double x0 = 0.0, x1 = xptr[0];
 				double pol, der;
-				na::legendre::evalpolyder(n, 0.0, pol, der);
+				na::legendre::evaluate_polynomial(n, 0.0, pol, der);
 				if (ifodd == 1)
 				{
 					xptr[0] = 0.0;
@@ -102,7 +102,7 @@ namespace na
 						{
 							break;
 						}
-						taylor(x0, h, n, ((k > 0) ? ((k == 1) ? 15 : 6) : 30), pol, der);
+						evaluate_taylor_series(x0, h, n, ((k > 0) ? ((k == 1) ? 15 : 6) : 30), pol, der);
 						x0 = x1;
 						x1 -= pol / der;
 						if (std::abs(pol) < 1e-8)
@@ -192,7 +192,7 @@ namespace na
 				if (ifodd == 1)
 				{
 					xptr[i] = 0.0;
-					whtptr[i] = 2.0 / std::pow(na::legendre::evalder(n, 0.0), 2);
+					whtptr[i] = 2.0 / std::pow(na::legendre::evaluate_derivative(n, 0.0), 2);
 				}
 			}
 		}
@@ -200,7 +200,7 @@ namespace na
 
 	namespace legendre
 	{
-		Eigen::VectorXd polycoefs(const int n)
+		Eigen::VectorXd polynomial_coefficients(const int n)
 		{
 			assert((n >= 0) && "n must be a non-negative integer");
 
@@ -241,7 +241,7 @@ namespace na
 			return coefs;
 		}
 
-		double evalpoly(
+		double evaluate_polynomial(
 			const int n,
 			const double x)
 		{
@@ -263,7 +263,7 @@ namespace na
 			return pkp1;
 		}
 
-		double evalder(
+		double evaluate_derivative(
 			const int n,
 			const double x)
 		{
@@ -289,7 +289,7 @@ namespace na
 			return val;
 		}
 
-		void evalpolyder(
+		void evaluate_polynomial(
 			const int n,
 			const double x,
 			double& pol,
@@ -336,7 +336,7 @@ namespace na
 			}
 		}
 
-		Eigen::VectorXd expncoefs(
+		Eigen::VectorXd expansion_coefficients(
 			const int n,
 			const Eigen::VectorXd& vals)
 		{
@@ -344,10 +344,10 @@ namespace na
 
 			Eigen::VectorXd xslege, whtslege;
 			quadrature(n, xslege, whtslege);
-			return coefsmatrix(n, xslege, whtslege) * vals;
+			return coefficient_matrix(n, xslege, whtslege) * vals;
 		}
 
-		double evalexpn(
+		double evaluate_expansion(
 			const int n,
 			const Eigen::VectorXd& coefs,
 			const double x)
@@ -372,7 +372,7 @@ namespace na
 			return val;
 		}
 
-		void evalexpnder(
+		void evaluate_expansion(
 			const int n,
 			const Eigen::VectorXd& coefs,
 			const double x,
@@ -429,7 +429,7 @@ namespace na
 			return whtsinterp.dot(vals) / whtsinterp.dot(whtslege.cwiseSqrt());
 		}
 
-		Eigen::MatrixXd interpmatrix(
+		Eigen::MatrixXd interpolation_matrix(
 			const int n,
 			const Eigen::VectorXd& xslege,
 			const Eigen::VectorXd& whtslege,
@@ -478,7 +478,7 @@ namespace na
 			return ainterp;
 		}
 
-		Eigen::MatrixXd coefsmatrix(
+		Eigen::MatrixXd coefficient_matrix(
 			const int n,
 			const Eigen::VectorXd& xslege,
 			const Eigen::VectorXd& whtslege)

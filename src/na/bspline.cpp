@@ -6,7 +6,7 @@ namespace na
 {
 	namespace bspline
 	{
-		Eigen::Vector3d eval(
+		Eigen::Vector3d evaluate(
 			const Eigen::MatrixXd& q,
 			const Eigen::VectorXd& T,
 			const int deg,
@@ -15,11 +15,11 @@ namespace na
 		{
 			Eigen::VectorXd b;
 			int mu;
-			eval_basis(T, deg, m, s, mu, b);
+			evaluate_basis(T, deg, m, s, mu, b);
 			return q.middleRows(mu - deg, deg + 1).transpose() * b;
 		}
 
-		void eval_basis(
+		void evaluate_basis(
 			const Eigen::VectorXd& T,
 			const int deg,
 			const int m,
@@ -86,7 +86,7 @@ namespace na
 			}
 		}
 
-		Eigen::VectorXd eval_basis(
+		Eigen::VectorXd evaluate_basis(
 			const Eigen::VectorXd& T,
 			const int deg,
 			const int m,
@@ -94,11 +94,11 @@ namespace na
 		{
 			Eigen::VectorXd b;
 			int mu;
-			eval_basis(T, deg, m, s, mu, b);
+			evaluate_basis(T, deg, m, s, mu, b);
 			return b;
 		}
 
-		Eigen::MatrixXd eval_basis(
+		Eigen::MatrixXd evaluate_basis(
 			const Eigen::VectorXd& T,
 			const int deg,
 			const int m,
@@ -107,7 +107,7 @@ namespace na
 			// n is the number of control points needed to be compatible with T.
 			const int n = T.size() - deg - 1;
 
-			// b.row(i) contains the value of all n basis function evald at s(i).
+			// b.row(i) contains the value of all n basis function evaluated at s(i).
 			const int num_pts = s.size();
 			Eigen::MatrixXd b(num_pts, n);
 			b.setZero();
@@ -116,7 +116,7 @@ namespace na
 			Eigen::VectorXd temp;
 			for (int i = 0; i < num_pts; ++i)
 			{
-				eval_basis(T, deg, m, s(i), mu, temp);
+				evaluate_basis(T, deg, m, s(i), mu, temp);
 				b.block(i, mu - deg, 1, deg + 1) = temp.transpose();
 			}
 			return b;

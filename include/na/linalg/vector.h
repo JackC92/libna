@@ -13,10 +13,28 @@ namespace na
 		struct scaling_constants
 		{
 			static_assert(std::is_floating_point_v<Real>, "scaling_constants can only be used for floating point types");
-			static Real tau_min;
-			static Real tau_max;
-			static Real sig_min;
-			static Real sig_max;
+			static constexpr Real tau_min{ 0.0 };
+			static constexpr Real tau_max{ 0.0 };
+			static constexpr Real sig_min{ 0.0 };
+			static constexpr Real sig_max{ 0.0 };
+		};
+
+		template <>
+		struct scaling_constants<float>
+		{
+			static constexpr float tau_min{ 1.7763568394002504646778106689453e-15f };
+			static constexpr float tau_max{ 4.6116860184273879040000000000000e+18f };
+			static constexpr float sig_min{ 1.2676506002282294014967032053760e+30f };
+			static constexpr float sig_max{ 1.3552527156068805425093160010874e-20f };
+		};
+
+		template <>
+		struct scaling_constants<double>
+		{
+			static constexpr double tau_min{ 8.0083323807324036977183408605459e-146 };
+			static constexpr double tau_max{ 3.3519519824856492748935062495515e+153 };
+			static constexpr double sig_min{ 1.6209045190941378744189093217544e+178 };
+			static constexpr double sig_max{ 1.8645851828000516858227413288657e-155 };
 		};
 
 		// This function is based on the paper

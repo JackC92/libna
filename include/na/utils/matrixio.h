@@ -3,16 +3,18 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <typeinfo>
+#include <type_traits>
+#include <vector>
 #include "Eigen/Core"
+#include "Eigen/Sparse"
+#include "na/type_traits/is_complex.h"
 
 namespace na
 {
 	template <typename Derived>
 	bool read_mtx(
-		const std::string file_name,
-		const bool match_type,
-		Eigen::MatrixBase<Derived>& M)
+		const std::string& file_name,
+		Eigen::EigenBase<Derived>& M)
 	{
 		std::ifstream file(file_name);
 		if (file.fail())
@@ -20,59 +22,31 @@ namespace na
 			return false;
 		}
 		std::string line;
+		std::getline(file, line);
+		std::string beginner, object, format, field, symmetry;
+		std::stringstream(line) >> beginner >> object >> format >> field >> symmetry;
+		// std::string::compare() returns 0 if the two strings match exactly.
+		if ((beginner.compare("%MatrixMarket") * beginner.compare("%%MatrixMarket")) != 0)
 		{
-			std::getline(file, line);
-			std::string beginner, object, format, field, symmetry;
-			std::stringstream(line) >> beginner >> object >> format >> field >> symmetry;
-			// std::string::compare() returns 0 if the two strings match exactly.
-			if ((beginner.compare("%MatrixMarket") * beginner.compare("%%MatrixMarket")) != 0)
-			{
-				return false;
-			}
-			// TODO: another legal value is "vector".
-			if (object.compare("matrix") != 0)
-			{
-				return false;
-			}
-			// TODO: another legal value is "coordinate", but would be more suitable to use Eigen::SparseMatrix for storage.
-			if (format.compare("array") != 0)
-			{
-				return false;
-			}
-			// TODO: other legal values include "complex" and "pattern".
-			if (match_type)
-			{
-				if (field.compare("real") == 0)
-				{
-					if (typeid(Derived::Scalar) != typeid(double))
-					{
-						return false;
-					}
-				}
-				else if (field.compare("double") == 0)
-				{
-					if (typeid(Derived::Scalar) != typeid(double))
-					{
-						return false;
-					}
-				}
-				else if (field.compare("integer") == 0)
-				{
-					if (typeid(Derived::Scalar) != typeid(int))
-					{
-						return false;
-					}
-				}
-				else
-				{
-					return false;
-				}
-			}
-			// TODO: other legal values include "symmetric", "skew-symmetric" and "hermitian".
-			if (symmetry.compare("general") != 0)
-			{
-				return false;
-			}
+			return false;
+		}
+		if (object.compare("matrix") != 0)
+		{
+			return false;
+		}
+		// This establishes the equivalence between "array" and Eigen::Matrix, or "coordinate" and Eigen::SparseMatrix.
+		if (!(((format.compare("array") == 0) && std::is_same_v<Derived, Eigen::Matrix<Derived::Scalar, Derived::RowsAtCompileTime, Derived::ColsAtCompileTime, Derived::Options, Derived::MaxRowsAtCompileTime, Derived::MaxColsAtCompileTime>>) || ((format.compare("coordinate") == 0) && std::is_same_v<Derived, Eigen::SparseMatrix<Derived::Scalar, Derived::Options, Derived::StorageIndex>>)))
+		{
+			return false;
+		}
+		if ((format.compare("coordinate") == 0) ^ (field.compare("pattern") == 0))
+		{
+			return false;
+		}
+		// TODO: other legal values include "symmetric", "skew-symmetric" and "hermitian".
+		if (symmetry.compare("general") != 0)
+		{
+			return false;
 		}
 		// Skip all the comment lines.
 		while (std::getline(file, line))
@@ -82,6 +56,8 @@ namespace na
 				break;
 			}
 		}
+		// The while loop above should have consumed the size line, if it exists. The following code does the actual check on the size line.
+		if constexpr (std::is_same_v<Derived, Eigen::Matrix<Derived::Scalar, Derived::RowsAtCompileTime, Derived::ColsAtCompileTime, Derived::Options, Derived::MaxRowsAtCompileTime, Derived::MaxColsAtCompileTime>>)
 		{
 			int rows, cols;
 			std::stringstream(line) >> rows >> cols;
@@ -89,35 +65,92 @@ namespace na
 			{
 				return false;
 			}
-			if ((Derived::Options & Eigen::RowMajor) == 1)
+			if ((Derived::RowsAtCompileTime != Eigen::Dynamic) && (rows != Derived::RowsAtCompileTime))
 			{
-				M.derived().resize(cols, rows);
+				return false;
 			}
-			else
+			if ((Derived::ColsAtCompileTime != Eigen::Dynamic) && (cols != Derived::ColsAtCompileTime))
 			{
-				M.derived().resize(rows, cols);
+				return false;
 			}
-		}
-		{
-			Derived::Scalar* ptr = M.derived().data();
-			while (std::getline(file, line))
+			if ((Derived::RowsAtCompileTime == Eigen::Dynamic) && (Derived::MaxRowsAtCompileTime != Eigen::Dynamic) && (rows > Derived::MaxRowsAtCompileTime))
+			{
+				return false;
+			}
+			if ((Derived::ColsAtCompileTime == Eigen::Dynamic) && (Derived::MaxColsAtCompileTime != Eigen::Dynamic) && (cols > Derived::MaxColsAtCompileTime))
+			{
+				return false;
+			}
+			M.derived().resize(rows, cols);
+
+			Derived::RealScalar* ptr = (Derived::RealScalar*)M.derived().data();
+			Derived::RealScalar* end = (Derived::RealScalar*)(M.derived().data() + M.size());
+			while (std::getline(file, line) && (ptr < end))
 			{
 				std::stringstream stream(line);
-				stream >> *ptr;
+				if constexpr (na::is_complex_v<Derived::Scalar>)
+				{
+					stream >> *ptr >> *(ptr + 1);
+					ptr += 2;
+				}
+				else
+				{
+					stream >> *ptr;
+					ptr += 1;
+				}
 				if (stream.fail())
 				{
 					return false;
 				}
-				ptr += 1;
 			}
-			if (ptr < M.derived().data() + M.size())
+			if (ptr < end)
 			{
 				return false;
 			}
+			if ((Derived::Options & Eigen::RowMajor) == 1)
+			{
+				M.derived() = M.derived().transpose().reshaped(rows, cols).eval();
+			}
 		}
-		if ((Derived::Options & Eigen::RowMajor) == 1)
+		else
 		{
-			M.derived().transposeInPlace();
+			int rows, cols, nnz;
+			std::stringstream(line) >> rows >> cols >> nnz;
+			if ((rows <= 0) || (cols <= 0) || (nnz <= 0))
+			{
+				return false;
+			}
+			M.derived().resize(rows, cols);
+			M.derived().reserve(nnz);
+
+			std::vector<Eigen::Triplet<Derived::Scalar>> triplets;
+			triplets.reserve(nnz);
+			while (std::getline(file, line))
+			{
+				int row, col;
+				Derived::RealScalar real, imag;
+				std::stringstream stream(line);
+				stream >> row >> col;
+				if constexpr (na::is_complex_v<Derived::Scalar>)
+				{
+					stream >> real >> imag;
+					triplets.emplace_back(row - 1, col - 1, Derived::Scalar(real, imag));
+				}
+				else
+				{
+					stream >> real;
+					triplets.emplace_back(row - 1, col - 1, real);
+				}
+				if (stream.fail())
+				{
+					return false;
+				}
+			}
+			if (triplets.size() != nnz)
+			{
+				return false;
+			}
+			M.derived().setFromTriplets(triplets.begin(), triplets.end());
 		}
 		return true;
 	}

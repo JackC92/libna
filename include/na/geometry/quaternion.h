@@ -123,6 +123,45 @@ namespace na
 			Real half_angle = static_cast<Real>(0.5) * angleZ;
 			return Eigen::Quaternion<Real, Options>(std::cos(half_angle), std::sin(half_angle), 0.0, 0.0);
 		}
+
+		/*
+		* The following functions are useful for multi-body physics when considering quaternion-valued functions defined over a time interval.
+		* Notice that addition, subtraction and scaling of quaternions are not available in Eigen because Eigen::Quaternion was only intended to represent 3D rotations, see https://eigen.tuxfamily.org/bz/show_bug.cgi?id=560.
+		*/
+
+		// Compute the quaternion first derivative from the vector of angular speed given in absolute coordinates.
+		template <typename Real, int Options>
+		inline Eigen::Quaternion<Real, Options> Qdt_from_Wabs(const Eigen::Vector<Real, 3>& w, const Eigen::Quaternion<Real, Options>& q)
+		{
+			return Eigen::Quaternion<Real, Options>(0.0, w(0) * static_cast<Real>(0.5), w(1) * static_cast<Real>(0.5), w(2) * static_cast<Real>(0.5)) * q;
+		}
+
+		// Compute the quaternion first derivative from the vector of angular speed given in local coordinates.
+		template <typename Real, int Options>
+		inline Eigen::Quaternion<Real, Options> Qdt_from_Wloc(const Eigen::Vector<Real, 3>& w, const Eigen::Quaternion<Real, Options>& q)
+		{
+			return q * Eigen::Quaternion<Real, Options>(0.0, w(0) * static_cast<Real>(0.5), w(1) * static_cast<Real>(0.5), w(2) * static_cast<Real>(0.5));
+		}
+
+		// Compute the quaternion second derivative from the vector of angular speed given in absolute coordinates.
+		template <typename Real, int Options>
+		inline Eigen::Quaternion<Real, Options> Qdtdt_from_Aabs(
+			const Eigen::Vector<Real, 3>& a,
+			const Eigen::Quaternion<Real, Options>& q,
+			const Eigen::Quaternion<Real, Options>& q_dt)
+		{
+			return Eigen::Quaternion<Real, Options>(0.0, a(0) * static_cast<Real>(0.5), a(1) * static_cast<Real>(0.5), a(2) * static_cast<Real>(0.5)) * q + q_dt * q.conjugate() * q_dt;
+		}
+
+		// Compute the quaternion second derivative from the vector of angular speed given in local coordinates.
+		template <typename Real, int Options>
+		inline Eigen::Quaternion<Real, Options> Qdtdt_from_Aloc(
+			const Eigen::Vector<Real, 3>& a,
+			const Eigen::Quaternion<Real, Options>& q,
+			const Eigen::Quaternion<Real, Options>& q_dt)
+		{
+			return q * Eigen::Quaternion<Real, Options>(0.0, a(0) * static_cast<Real>(0.5), a(1) * static_cast<Real>(0.5), a(2) * static_cast<Real>(0.5)) + q_dt * q.conjugate() * q_dt;
+		}
 	}
 }
 

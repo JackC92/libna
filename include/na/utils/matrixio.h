@@ -7,10 +7,31 @@
 #include <vector>
 #include "Eigen/Core"
 #include "Eigen/Sparse"
+#include "na/macros.h"
 #include "na/type_traits/is_complex.h"
 
 namespace na
 {
+	namespace internal
+	{
+		template <typename T, bool coordinate>
+		constexpr const char* mtx_data_format = nullptr;
+
+		EXPLICIT_SPEC constexpr const char* mtx_data_format<int, false> = "%i";
+		EXPLICIT_SPEC constexpr const char* mtx_data_format<float, false> = "%g";
+		EXPLICIT_SPEC constexpr const char* mtx_data_format<double, false> = "%lg";
+		EXPLICIT_SPEC constexpr const char* mtx_data_format<long double, false> = "%Lg";
+		EXPLICIT_SPEC constexpr const char* mtx_data_format<std::complex<float>, false> = "%g %g";
+		EXPLICIT_SPEC constexpr const char* mtx_data_format<std::complex<double>, false> = "%lg %lg";
+		EXPLICIT_SPEC constexpr const char* mtx_data_format<std::complex<long double>, false> = "%Lg %Lg";
+		EXPLICIT_SPEC constexpr const char* mtx_data_format<float, true> = "%i %i %g";
+		EXPLICIT_SPEC constexpr const char* mtx_data_format<double, true> = "%i %i %lg";
+		EXPLICIT_SPEC constexpr const char* mtx_data_format<long double, true> = "%i %i %Lg";
+		EXPLICIT_SPEC constexpr const char* mtx_data_format<std::complex<float>, true> = "%i %i %g %g";
+		EXPLICIT_SPEC constexpr const char* mtx_data_format<std::complex<double>, true> = "%i %i %lg %lg";
+		EXPLICIT_SPEC constexpr const char* mtx_data_format<std::complex<long double>, true> = "%i %i %Lg %Lg";
+	}
+
 	template <typename Derived>
 	bool read_mtx(
 		const std::string& file_name,
@@ -35,7 +56,7 @@ namespace na
 			return false;
 		}
 		// This establishes the equivalence between "array" and Eigen::Matrix, or "coordinate" and Eigen::SparseMatrix.
-		if (!(((format.compare("array") == 0) && std::is_same_v<Derived, Eigen::Matrix<Derived::Scalar, Derived::RowsAtCompileTime, Derived::ColsAtCompileTime, Derived::Options, Derived::MaxRowsAtCompileTime, Derived::MaxColsAtCompileTime>>) || ((format.compare("coordinate") == 0) && std::is_same_v<Derived, Eigen::SparseMatrix<Derived::Scalar, Derived::Options, Derived::StorageIndex>>)))
+		if (!(((format.compare("array") == 0) && std::is_same_v<Derived, Eigen::Matrix<typename Derived::Scalar, Derived::RowsAtCompileTime, Derived::ColsAtCompileTime, Derived::Options, Derived::MaxRowsAtCompileTime, Derived::MaxColsAtCompileTime>>) || ((format.compare("coordinate") == 0) && std::is_same_v<Derived, Eigen::SparseMatrix<typename Derived::Scalar, Derived::Options, typename Derived::StorageIndex>>)))
 		{
 			return false;
 		}
@@ -57,7 +78,7 @@ namespace na
 			}
 		}
 		// The while loop above should have consumed the size line, if it exists. The following code does the actual check on the size line.
-		if constexpr (std::is_same_v<Derived, Eigen::Matrix<Derived::Scalar, Derived::RowsAtCompileTime, Derived::ColsAtCompileTime, Derived::Options, Derived::MaxRowsAtCompileTime, Derived::MaxColsAtCompileTime>>)
+		if constexpr (std::is_same_v<Derived, Eigen::Matrix<typename Derived::Scalar, Derived::RowsAtCompileTime, Derived::ColsAtCompileTime, Derived::Options, Derived::MaxRowsAtCompileTime, Derived::MaxColsAtCompileTime>>)
 		{
 			int rows, cols;
 			std::stringstream(line) >> rows >> cols;
@@ -83,24 +104,25 @@ namespace na
 			}
 			M.derived().resize(rows, cols);
 
-			Derived::RealScalar* ptr = (Derived::RealScalar*)M.derived().data();
-			Derived::RealScalar* end = (Derived::RealScalar*)(M.derived().data() + M.size());
+			typename Derived::RealScalar* ptr = (typename Derived::RealScalar*)M.derived().data();
+			typename Derived::RealScalar* end = (typename Derived::RealScalar*)(M.derived().data() + M.size());
 			while (std::getline(file, line) && (ptr < end))
 			{
-				std::stringstream stream(line);
 				if constexpr (na::is_complex_v<Derived::Scalar>)
 				{
-					stream >> *ptr >> *(ptr + 1);
+					if (std::sscanf(line.c_str(), na::internal::mtx_data_format<Derived::Scalar, false>, ptr, ptr + 1) != 2)
+					{
+						return false;
+					}
 					ptr += 2;
 				}
 				else
 				{
-					stream >> *ptr;
+					if (std::sscanf(line.c_str(), na::internal::mtx_data_format<Derived::Scalar, false>, ptr) != 1)
+					{
+						return false;
+					}
 					ptr += 1;
-				}
-				if (stream.fail())
-				{
-					return false;
 				}
 			}
 			if (ptr < end)
@@ -123,27 +145,27 @@ namespace na
 			M.derived().resize(rows, cols);
 			M.derived().reserve(nnz);
 
-			std::vector<Eigen::Triplet<Derived::Scalar>> triplets;
+			std::vector<Eigen::Triplet<typename Derived::Scalar>> triplets;
 			triplets.reserve(nnz);
 			while (std::getline(file, line))
 			{
 				int row, col;
-				Derived::RealScalar real, imag;
-				std::stringstream stream(line);
-				stream >> row >> col;
+				typename Derived::RealScalar real, imag;
 				if constexpr (na::is_complex_v<Derived::Scalar>)
 				{
-					stream >> real >> imag;
+					if (std::sscanf(line.c_str(), na::internal::mtx_data_format<Derived::Scalar, true>, &row, &col, &real, &imag) != 4)
+					{
+						return false;
+					}
 					triplets.emplace_back(row - 1, col - 1, Derived::Scalar(real, imag));
 				}
 				else
 				{
-					stream >> real;
+					if (std::sscanf(line.c_str(), na::internal::mtx_data_format<Derived::Scalar, true>, &row, &col, &real) != 3)
+					{
+						return false;
+					}
 					triplets.emplace_back(row - 1, col - 1, real);
-				}
-				if (stream.fail())
-				{
-					return false;
 				}
 			}
 			if (triplets.size() != nnz)

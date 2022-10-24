@@ -1,5 +1,9 @@
 #ifndef NA_BSPLINE_H
 #define NA_BSPLINE_H
+#include <functional>
+#include <memory>
+#include <type_traits>
+#include <vector>
 #include "Eigen/Core"
 
 namespace na

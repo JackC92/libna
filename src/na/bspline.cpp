@@ -1,6 +1,8 @@
 #include "na/bspline.h"
+#include <cmath>
 #include <cassert>
 #include "Eigen/Core"
+#include "Eigen/Geometry"
 
 namespace na
 {
@@ -120,6 +122,17 @@ namespace na
 				b.block(i, mu - deg, 1, deg + 1) = temp.transpose();
 			}
 			return b;
+		}
+
+		Eigen::Vector3d curvature_binormal(
+			const Eigen::MatrixXd& q,
+			const Eigen::VectorXd& T,
+			const int deg,
+			const double s)
+		{
+			Eigen::Vector3d v1 = evaluate(q, T, deg, 1, s);
+			Eigen::Vector3d v2 = evaluate(q, T, deg, 2, s);
+			return v1.cross(v2) * std::pow(v1.squaredNorm(), -1.5);
 		}
 	}
 }

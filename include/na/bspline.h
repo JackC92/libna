@@ -1,10 +1,12 @@
 #ifndef NA_BSPLINE_H
 #define NA_BSPLINE_H
+#include <cmath>
 #include <functional>
 #include <memory>
 #include <type_traits>
 #include <vector>
 #include "Eigen/Core"
+#include "Eigen/Geometry"
 
 namespace na
 {
@@ -85,6 +87,25 @@ namespace na
 				val += fn(nodes[mu - deg + i].get()) * b(i);
 			}
 			return val;
+		}
+
+		Eigen::Vector3d curvature_binormal(
+			const Eigen::MatrixXd& q,
+			const Eigen::VectorXd& T,
+			const int deg,
+			const double s);
+
+		template <typename Node, typename MemPtr>
+		Eigen::Vector3d curvature_binormal(
+			const std::vector<Node>& nodes,
+			const Eigen::VectorXd& T,
+			const int deg,
+			const double s,
+			MemPtr func)
+		{
+			Eigen::Vector3d v1 = evaluate(nodes, T, deg, 1, s, func);
+			Eigen::Vector3d v2 = evaluate(nodes, T, deg, 2, s, func);
+			return v1.cross(v2) * std::pow(v1.squaredNorm(), -1.5);
 		}
 	}
 }

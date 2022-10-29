@@ -3,6 +3,22 @@
 
 namespace na
 {
+	void make_basis(
+		const Eigen::Vector3d& D3,
+		Eigen::Ref<Eigen::Vector3d> D1,
+		Eigen::Ref<Eigen::Vector3d> D2)
+	{
+		if (D3(1) * D3(1) + D3(2) * D3(2) > 1e-12)
+		{
+			D1 = Eigen::Vector3d(0.0, D3(2), -D3(1)).normalized();
+		}
+		else
+		{
+			D1 = Eigen::Vector3d(-D3(2), 0.0, D3(0)).normalized();
+		}
+		D2 = D3.cross(D1);
+	}
+
 	Eigen::Vector3d smallest_rotation(
 		const Eigen::Vector3d& t0,
 		const Eigen::Vector3d& t1,

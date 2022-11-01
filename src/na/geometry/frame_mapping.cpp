@@ -1,5 +1,6 @@
 #include "na/geometry/frame_mapping.h"
 #include "Eigen/Core"
+#include "Eigen/Geometry"
 
 namespace na
 {

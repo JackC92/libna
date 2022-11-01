@@ -1,7 +1,4 @@
-#ifndef NA_RUNGE_KUTTA_H
-#define NA_RUNGE_KUTTA_H
-#include <functional>
-#include "Eigen/Core"
+#include "na/runge_kutta.h"
 
 namespace na
 {
@@ -14,25 +11,14 @@ namespace na
 			const double y0,
 			const double tolrel,
 			const double tolabs,
-			double& h);
-
-		template <typename DerivedIn, int Size, int Options = 0>
-		void dopri5_hinit(
-			const std::function<Eigen::Matrix<double, Size, 1, Options, Size, 1>(double, const Eigen::Matrix<double, Size, 1, Options, Size, 1>&)> f,
-			const double x0,
-			const double x1,
-			const Eigen::MatrixBase<DerivedIn>& y0,
-			const double tolrel,
-			const double tolabs,
 			double& h)
 		{
-			typedef typename Eigen::Matrix<double, Size, 1, Options, Size, 1> Vector;
 			// Compute a first guess for explicit Euler as
 			//   h = 0.01 * norm(y0) / norm(f(x0, y0))
-			Vector f0 = f(x0, y0);
-			Vector sk = tolabs + tolrel * y0.array().abs();
-			double dnf = f0.cwiseQuotient(sk).squaredNorm();
-			double dny = y0.cwiseQuotient(sk).squaredNorm();
+			double f0 = f(x0, y0);
+			double sk = tolabs + tolrel * std::abs(y0);
+			double dnf = std::pow(f0 / sk, 2.0);
+			double dny = std::pow(y0 / sk, 2.0);
 			if ((dnf < 1e-10) || (dny < 1e-10))
 			{
 				h = 1e-6;
@@ -43,8 +29,8 @@ namespace na
 			}
 			// TODO: allow user-specified maximal step size
 			h = std::min<double>(h, x1 - x0);
-			Vector f1 = f(x0 + h, y0 + h * f0);
-			double der2 = (f1 - f0).cwiseQuotient(sk).norm() / h;
+			double f1 = f(x0 + h, y0 + h * f0);
+			double der2 = std::abs((f1 - f0) / sk) / h;
 			// Step size is computed such that
 			//   h**5 * max(norm(f(x0, y0)), norm(der2)) = 0.01
 			double der12 = std::max<double>(der2, std::sqrt(dnf));
@@ -69,26 +55,8 @@ namespace na
 		double& x,
 		double& y,
 		double& h,
-		int& state);
-
-	template <typename DerivedIn, typename DerivedOut, int Size, int Options = 0>
-	void dopri5(
-		const std::function<Eigen::Matrix<double, Size, 1, Options, Size, 1>(double, const Eigen::Matrix<double, Size, 1, Options, Size, 1>&)> f,
-		const double x0,
-		const double x1,
-		const Eigen::MatrixBase<DerivedIn>& y0,
-		const double tolrel,
-		const double tolabs,
-		double& x,
-		const Eigen::MatrixBase<DerivedOut>& y,
-		double& h,
 		int& state)
 	{
-		static_assert(Size > 0, "Size must be a positive integer");
-		static_assert((DerivedIn::RowsAtCompileTime == Size) && (DerivedIn::ColsAtCompileTime == 1), "DerivedIn must have compatible size");
-		static_assert((DerivedOut::RowsAtCompileTime == Size) && (DerivedOut::ColsAtCompileTime == 1), "DerivedOut must have compatible size");
-		typedef typename Eigen::Matrix<double, Size, 1, Options, Size, 1> Vector;
-
 		constexpr double c2 = 0.2;
 		constexpr double c3 = 0.3;
 		constexpr double c4 = 0.8;
@@ -144,7 +112,7 @@ namespace na
 		double facold = 1e-4;
 
 		x = x0;
-		const_cast<Eigen::MatrixBase<DerivedOut>&>(y) = y0;
+		y = y0;
 		na::internal::dopri5_hinit(f, x0, x1, y0, tolrel, tolabs, h);
 
 		int step = 0;
@@ -170,18 +138,17 @@ namespace na
 			}
 			step += 1;
 
-			Vector k1 = f(x, y);
-			Vector k2 = f(x + c2 * h, y + (c2 * h) * (a21 * k1));
-			Vector k3 = f(x + c3 * h, y + (c3 * h) * (a31 * k1 + a32 * k2));
-			Vector k4 = f(x + c4 * h, y + (c4 * h) * (a41 * k1 + a42 * k2 + a43 * k3));
-			Vector k5 = f(x + c5 * h, y + (c5 * h) * (a51 * k1 + a52 * k2 + a53 * k3 + a54 * k4));
-			Vector y6 = y + h * (a61 * k1 + a62 * k2 + a63 * k3 + a64 * k4 + a65 * k5);
-			Vector k6 = f(x + h, y6);
-			Vector y7 = y + h * (a71 * k1 + a73 * k3 + a74 * k4 + a75 * k5 + a76 * k6);
-			Vector k7 = f(x + h, y7);
+			double k1 = f(x, y);
+			double k2 = f(x + c2 * h, y + (c2 * h) * (a21 * k1));
+			double k3 = f(x + c3 * h, y + (c3 * h) * (a31 * k1 + a32 * k2));
+			double k4 = f(x + c4 * h, y + (c4 * h) * (a41 * k1 + a42 * k2 + a43 * k3));
+			double k5 = f(x + c5 * h, y + (c5 * h) * (a51 * k1 + a52 * k2 + a53 * k3 + a54 * k4));
+			double y6 = y + h * (a61 * k1 + a62 * k2 + a63 * k3 + a64 * k4 + a65 * k5);
+			double k6 = f(x + h, y6);
+			double y7 = y + h * (a71 * k1 + a73 * k3 + a74 * k4 + a75 * k5 + a76 * k6);
+			double k7 = f(x + h, y7);
 
-			Vector sk = tolabs + tolrel * y.array().abs().max(y7.array().abs());
-			double err = (h * (e1 * k1 + e3 * k3 + e4 * k4 + e5 * k5 + e6 * k6 + e7 * k7)).cwiseQuotient(sk).norm() * std::sqrt(1.0 / Size);
+			double err = std::abs((h * (e1 * k1 + e3 * k3 + e4 * k4 + e5 * k5 + e6 * k6 + e7 * k7)) / (tolabs + tolrel * std::max<double>(std::abs(y), std::abs(y7))));
 			double hnew = h / std::max<double>(facc2, std::min<double>(facc1, std::pow(err, expo1) / std::pow(facold, beta) / safe));
 
 			if (err < 1.0)
@@ -192,8 +159,8 @@ namespace na
 				// Stiffness detection
 				if ((naccept % nstiff == 0) || (iasti > 0))
 				{
-					double num = (k7 - k6).squaredNorm();
-					double den = (y7 - y6).squaredNorm();
+					double num = std::pow(k7 - k6, 2.0);
+					double den = std::pow(y7 - y6, 2.0);
 					if (den > 0.0)
 					{
 						hlamb = h * std::sqrt(num / den);
@@ -218,7 +185,7 @@ namespace na
 					}
 				}
 				x += h;
-				const_cast<Eigen::MatrixBase<DerivedOut>&>(y) = y7;
+				y = y7;
 				if (last)
 				{
 					h = hnew;
@@ -246,5 +213,3 @@ namespace na
 		}
 	}
 }
-
-#endif // !NA_RUNGE_KUTTA_H

@@ -8,11 +8,11 @@ namespace na
 {
 	namespace graphics
 	{
-		template <typename DerivedV, typename DerivedT, typename Scalar>
+		template <typename DerivedV, typename DerivedT, typename Scalar, int Options>
 		void massmatrix_tet(
 			const Eigen::MatrixBase<DerivedV>& V,
 			const Eigen::MatrixBase<DerivedT>& T,
-			Eigen::SparseMatrix<Scalar>& M)
+			Eigen::SparseMatrix<Scalar, Options>& M)
 		{
 			static_assert(DerivedV::ColsAtCompileTime == 3, "DerivedV must have compatible size");
 			static_assert(DerivedT::ColsAtCompileTime == 4, "DerivedT must have compatible size");

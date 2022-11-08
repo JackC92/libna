@@ -27,11 +27,12 @@ namespace na
 			// This reallocates sufficient memory for the value and inner-index array, but does not update the size tracked by the CompressedStorage object.
 			G.data().reserve(4 * G.rows());
 			Eigen::Map<Eigen::Vector<StorageIndex, Eigen::Dynamic>, Eigen::Aligned16>(G.outerIndexPtr(), 3 * Trows + 1).setLinSpaced(0, 12 * Trows);
+			Eigen::Vector<StorageIndex, 4> order(0, 1, 2, 3), argorder(0, 1, 2, 3);
 			for (Eigen::Index i = 0; i < Trows; ++i)
 			{
 				Eigen::Vector<typename DerivedT::Scalar, 4> tet = T.row(i);
-				Eigen::Vector<StorageIndex, 4> order(0, 1, 2, 3);
 				std::sort(order.data(), order.data() + 4, [&tet](StorageIndex k, StorageIndex l) { return tet(k) < tet(l); });
+				std::sort(argorder.data(), argorder.data() + 4, [&order](StorageIndex k, StorageIndex l) { return order(k) < order(l); });
 				Eigen::Vector<Scalar, 3> a = V.row(tet(0));
 				Eigen::Vector<Scalar, 3> b = V.row(tet(1));
 				Eigen::Vector<Scalar, 3> c = V.row(tet(2));
@@ -40,10 +41,10 @@ namespace na
 				Eigen::Vector<Scalar, 3> nb = (d - c).cross(a - c).normalized();
 				Eigen::Vector<Scalar, 3> nc = (d - a).cross(b - a).normalized();
 				Eigen::Vector<Scalar, 3> nd = (b - a).cross(c - a).normalized();
-				Eigen::Map<Eigen::Vector<Scalar, 3>, Eigen::Unaligned, Eigen::InnerStride<Eigen::Dynamic>>(G.valuePtr() + 4 * i + order(0), Eigen::InnerStride<Eigen::Dynamic>(4 * Trows)) = na / na.dot(a - b);
-				Eigen::Map<Eigen::Vector<Scalar, 3>, Eigen::Unaligned, Eigen::InnerStride<Eigen::Dynamic>>(G.valuePtr() + 4 * i + order(1), Eigen::InnerStride<Eigen::Dynamic>(4 * Trows)) = nb / nb.dot(b - c);
-				Eigen::Map<Eigen::Vector<Scalar, 3>, Eigen::Unaligned, Eigen::InnerStride<Eigen::Dynamic>>(G.valuePtr() + 4 * i + order(2), Eigen::InnerStride<Eigen::Dynamic>(4 * Trows)) = nc / nc.dot(c - a);
-				Eigen::Map<Eigen::Vector<Scalar, 3>, Eigen::Unaligned, Eigen::InnerStride<Eigen::Dynamic>>(G.valuePtr() + 4 * i + order(3), Eigen::InnerStride<Eigen::Dynamic>(4 * Trows)) = nd / nd.dot(d - a);
+				Eigen::Map<Eigen::Vector<Scalar, 3>, Eigen::Unaligned, Eigen::InnerStride<Eigen::Dynamic>>(G.valuePtr() + 4 * i + argorder(0), Eigen::InnerStride<Eigen::Dynamic>(4 * Trows)) = na / na.dot(a - b);
+				Eigen::Map<Eigen::Vector<Scalar, 3>, Eigen::Unaligned, Eigen::InnerStride<Eigen::Dynamic>>(G.valuePtr() + 4 * i + argorder(1), Eigen::InnerStride<Eigen::Dynamic>(4 * Trows)) = nb / nb.dot(b - c);
+				Eigen::Map<Eigen::Vector<Scalar, 3>, Eigen::Unaligned, Eigen::InnerStride<Eigen::Dynamic>>(G.valuePtr() + 4 * i + argorder(2), Eigen::InnerStride<Eigen::Dynamic>(4 * Trows)) = nc / nc.dot(c - a);
+				Eigen::Map<Eigen::Vector<Scalar, 3>, Eigen::Unaligned, Eigen::InnerStride<Eigen::Dynamic>>(G.valuePtr() + 4 * i + argorder(3), Eigen::InnerStride<Eigen::Dynamic>(4 * Trows)) = nd / nd.dot(d - a);
 				Eigen::Map<Eigen::Matrix<StorageIndex, 4, 3>, Eigen::Aligned16, Eigen::OuterStride<Eigen::Dynamic>>(G.innerIndexPtr() + 4 * i, Eigen::OuterStride<Eigen::Dynamic>(4 * Trows)) << tet(order), tet(order), tet(order);
 			}
 			G.data().resize(4 * G.rows());

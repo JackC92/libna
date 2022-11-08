@@ -21,6 +21,7 @@ namespace na
 			const Eigen::Index Trows = T.rows();
 			M.resize(Vrows, Vrows);
 			M.data().reserve(Vrows);
+			Eigen::Map<Eigen::Vector<Scalar, Eigen::Dynamic>, Eigen::Aligned16>(M.valuePtr(), Vrows).setZero();
 			Eigen::Map<Eigen::Vector<StorageIndex, Eigen::Dynamic>, Eigen::Aligned16>(M.outerIndexPtr(), Vrows + 1).setLinSpaced(0, Vrows);
 			Eigen::Map<Eigen::Vector<StorageIndex, Eigen::Dynamic>, Eigen::Aligned16>(M.innerIndexPtr(), Vrows).setLinSpaced(0, Vrows - 1);
 			for (Eigen::Index i = 0; i < Trows; ++i)

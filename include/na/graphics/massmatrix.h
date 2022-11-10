@@ -8,6 +8,64 @@ namespace na
 {
 	namespace graphics
 	{
+		template <typename DerivedV, typename DerivedF, typename Scalar, int Options, typename StorageIndex>
+		void massmatrix_tri_consistent(
+			const Eigen::MatrixBase<DerivedV>& V,
+			const Eigen::MatrixBase<DerivedF>& F,
+			Eigen::SparseMatrix<Scalar, Options, StorageIndex>& M)
+		{
+			static_assert(DerivedV::ColsAtCompileTime == 3, "DerivedV must have compatible size");
+			static_assert(DerivedF::ColsAtCompileTime == 3, "DerivedF must have compatible size");
+			static_assert(std::is_same_v<typename DerivedV::Scalar, Scalar>, "V and M must have the same numeric type");
+			const Eigen::Index Vrows = V.rows();
+			const Eigen::Index Frows = F.rows();
+			M.resize(Vrows, Vrows);
+			std::vector<Eigen::Triplet<Scalar, StorageIndex>> triplets;
+			triplets.reserve(9 * Frows);
+			for (Eigen::Index i = 0; i < Frows; ++i)
+			{
+				Eigen::Vector<typename DerivedF::Scalar, 3> tri = F.row(i);
+				Scalar area = static_cast<Scalar>(1.0 / 24.0) * (V.row(tri(1)) - V.row(tri(0))).cross(V.row(tri(2)) - V.row(tri(0))).norm();
+				triplets.emplace_back(tri(0), tri(0), area);
+				triplets.emplace_back(tri(0), tri(1), area);
+				triplets.emplace_back(tri(0), tri(2), area);
+				triplets.emplace_back(tri(1), tri(0), area);
+				triplets.emplace_back(tri(1), tri(1), area);
+				triplets.emplace_back(tri(1), tri(2), area);
+				triplets.emplace_back(tri(2), tri(0), area);
+				triplets.emplace_back(tri(2), tri(1), area);
+				triplets.emplace_back(tri(2), tri(2), area);
+			}
+			M.setFromTriplets(triplets.begin(), triplets.end());
+		}
+
+		template <typename DerivedV, typename DerivedF, typename Scalar, int Options, typename StorageIndex>
+		void massmatrix_tri_lumped(
+			const Eigen::MatrixBase<DerivedV>& V,
+			const Eigen::MatrixBase<DerivedF>& F,
+			Eigen::SparseMatrix<Scalar, Options, StorageIndex>& M)
+		{
+			static_assert(DerivedV::ColsAtCompileTime == 3, "DerivedV must have compatible size");
+			static_assert(DerivedF::ColsAtCompileTime == 3, "DerivedF must have compatible size");
+			static_assert(std::is_same_v<typename DerivedV::Scalar, Scalar>, "V and M must have the same numeric type");
+			const Eigen::Index Vrows = V.rows();
+			const Eigen::Index Frows = F.rows();
+			M.resize(Vrows, Vrows);
+			M.data().reserve(Vrows);
+			Eigen::Map<Eigen::Vector<Scalar, Eigen::Dynamic>, Eigen::Aligned16>(M.valuePtr(), Vrows).setZero();
+			Eigen::Map<Eigen::Vector<StorageIndex, Eigen::Dynamic>, Eigen::Aligned16>(M.outerIndexPtr(), Vrows + 1).setLinSpaced(0, Vrows);
+			Eigen::Map<Eigen::Vector<StorageIndex, Eigen::Dynamic>, Eigen::Aligned16>(M.innerIndexPtr(), Vrows).setLinSpaced(0, Vrows - 1);
+			for (Eigen::Index i = 0; i < Frows; ++i)
+			{
+				Eigen::Vector<typename DerivedF::Scalar, 3> tri = F.row(i);
+				Scalar area = static_cast<Scalar>(1.0 / 6.0) * (V.row(tri(1)) - V.row(tri(0))).cross(V.row(tri(2)) - V.row(tri(0))).norm();
+				M.valuePtr()[tri(0)] += area;
+				M.valuePtr()[tri(1)] += area;
+				M.valuePtr()[tri(2)] += area;
+			}
+			M.data().resize(Vrows);
+		}
+
 		template <typename DerivedV, typename DerivedT, typename Scalar, int Options, typename StorageIndex>
 		void massmatrix_tet(
 			const Eigen::MatrixBase<DerivedV>& V,

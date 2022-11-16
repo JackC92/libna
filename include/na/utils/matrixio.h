@@ -176,6 +176,29 @@ namespace na
 		}
 		return true;
 	}
+
+	template <typename Scalar, int Options, typename StorageIndex>
+	void write_matlab(
+		const std::string& file_name,
+		Eigen::SparseMatrix<Scalar, Options, StorageIndex>& M)
+	{
+		std::ofstream writer(file_name);
+		for (Eigen::Index outer = 0; outer < M.outerSize(); ++outer)
+		{
+			for (Eigen::SparseMatrix<Scalar, Options, StorageIndex>::InnerIterator iter(M, outer); iter; ++iter)
+			{
+				writer << (iter.row() + 1) << " " << (iter.col() + 1) << " ";
+				if constexpr (na::is_complex_v<Scalar>)
+				{
+					writer << iter.value().real() << " " << iter.value().imag() << "\n";
+				}
+				else
+				{
+					writer << iter.value() << "\n";
+				}
+			}
+		}
+	}
 }
 
 #endif // !NA_UTILS_MATRIXIO_H

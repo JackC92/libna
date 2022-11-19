@@ -12,7 +12,7 @@ namespace na
 	namespace linalg
 	{
 		Eigen::SparseMatrix<double> colleague_matrix(
-			const int n,
+			const Eigen::Index n,
 			const Eigen::VectorXd& coefs)
 		{
 			assert((n >= 1) && "n must be a positive integer");
@@ -22,12 +22,12 @@ namespace na
 			cmatr.reserve(Eigen::VectorXi::Constant(n, 3));
 			cmatr.insert(1, 0) = std::sqrt(0.5);
 			cmatr.insert(0, 1) = std::sqrt(0.5);
-			for (int i = 1; i < n - 1; ++i)
+			for (Eigen::Index i = 1; i < n - 1; ++i)
 			{
 				cmatr.insert(i, i + 1) = 0.5;
 				cmatr.insert(i + 1, i) = 0.5;
 			}
-			for (int i = 0; i < n; ++i)
+			for (Eigen::Index i = 0; i < n; ++i)
 			{
 				cmatr.coeffRef(n - 1, i) += -coefs(i) / coefs(n) * (i == 0 ? std::sqrt(0.5) : 0.5);
 			}
@@ -35,7 +35,7 @@ namespace na
 		}
 
 		Eigen::SparseMatrix<Eigen::dcomplex> colleague_matrix(
-			const int n,
+			const Eigen::Index n,
 			const Eigen::VectorXcd& coefs)
 		{
 			assert((n >= 1) && "n must be a positive integer");
@@ -45,12 +45,12 @@ namespace na
 			cmatr.reserve(Eigen::VectorXi::Constant(n, 3));
 			cmatr.insert(1, 0) = std::sqrt(0.5);
 			cmatr.insert(0, 1) = std::sqrt(0.5);
-			for (int i = 1; i < n - 1; ++i)
+			for (Eigen::Index i = 1; i < n - 1; ++i)
 			{
 				cmatr.insert(i, i + 1) = 0.5;
 				cmatr.insert(i + 1, i) = 0.5;
 			}
-			for (int i = 0; i < n; ++i)
+			for (Eigen::Index i = 0; i < n; ++i)
 			{
 				cmatr.coeffRef(n - 1, i) += -std::conj(coefs(i) / coefs(n)) * (i == 0 ? std::sqrt(0.5) : 0.5);
 			}
@@ -58,7 +58,7 @@ namespace na
 		}
 
 		Eigen::VectorXcd colleague_roots(
-			const int n,
+			const Eigen::Index n,
 			const Eigen::VectorXcd& coefs,
 			const double eps)
 		{
@@ -80,7 +80,7 @@ namespace na
 		}
 
 		Eigen::VectorXd colleague_roots_m1p1(
-			const int n,
+			const Eigen::Index n,
 			const Eigen::VectorXd& coefs,
 			const double eps,
 			const double delta,
@@ -92,7 +92,7 @@ namespace na
 			Eigen::VectorXcd croots = colleague_roots(n, coefs, eps);
 			// Select all the complex roots in the rectangle [-1-delta, 1+delta] x [-delta, delta] \subset \C
 			int count = 0;
-			for (int i = 0; i < n; ++i)
+			for (Eigen::Index i = 0; i < n; ++i)
 			{
 				if ((std::abs(croots(i).real()) > 1.0 + delta) || (std::abs(croots(i).imag()) > delta))
 				{
@@ -104,7 +104,7 @@ namespace na
 			// Discard any roots with a large error
 			double coefsize = coefs.norm();
 			int nroots = 0;
-			for (int i = 0; i < count; ++i)
+			for (Eigen::Index i = 0; i < count; ++i)
 			{
 				if (std::abs(na::chebyshev::evaluate_expansion(n, coefs, roots(i))) > coff * coefsize)
 				{

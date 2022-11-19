@@ -25,7 +25,7 @@ namespace na
 				Eigen::VectorXcd& supdiag,
 				Eigen::VectorXcd& p,
 				Eigen::VectorXcd& q,
-				const int n,
+				const Eigen::Index n,
 				const double eps);
 		}
 	}

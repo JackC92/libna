@@ -2,6 +2,7 @@
 #define NA_ADAPTIVE_LEVIN_H
 #include <complex>
 #include <functional>
+#include "Eigen/Core"
 
 namespace na
 {
@@ -13,7 +14,7 @@ namespace na
 		const double a,
 		const double b,
 		const double tol,
-		const int k);
+		const Eigen::Index k);
 
 	// Compute the integral of f(x) * exp(i * g(x)) over the interval [a, b] \in \R with
 	// the user-provided tolerance tol using the Chebyshev spectral method of order k.
@@ -23,7 +24,7 @@ namespace na
 		const double a,
 		const double b,
 		const double tol,
-		const int k);
+		const Eigen::Index k);
 }
 
 #endif // !NA_ADAPTIVE_LEVIN_H

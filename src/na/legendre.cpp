@@ -13,8 +13,8 @@ namespace na
 			inline void evaluate_taylor_series(
 				const double x,
 				const double h,
-				const int n,
-				const int k,
+				const Eigen::Index n,
+				const Eigen::Index k,
 				double& pol,
 				double& der)
 			{
@@ -23,7 +23,7 @@ namespace na
 
 				if (!called)
 				{
-					for (int i = 0; i < 30; ++i)
+					for (Eigen::Index i = 0; i < 30; ++i)
 					{
 						aux.coeffRef(4 * i) = 1.0 / ((i + 2.0) * (i + 3.0));
 						aux.coeffRef(4 * i + 1) = (i + 2.0) * (i + 2.0);
@@ -58,7 +58,7 @@ namespace na
 			//   A. Glaser, X. Liu, and V. Rokhlin, "A Fast Algorithm for the Calculation of the Roots of Special Functions",
 			//   SIAM Journal on Scientific Computing, 2007
 			void quadrature_glaser(
-				const int n,
+				const Eigen::Index n,
 				Eigen::VectorXd& xslege,
 				Eigen::VectorXd& whtslege)
 			{
@@ -69,14 +69,14 @@ namespace na
 					return;
 				}
 
-				const int i = n / 2;
-				const int ifodd = n % 2;
+				const Eigen::Index i = n / 2;
+				const Eigen::Index ifodd = n % 2;
 				const double n0 = M_PI / (n + 0.5);
 				const double n1 = 0.125 * (n - 1) * std::pow(n, -3) + 0.1015625 * std::pow(n, -4) - 1.0;
 				const double n2 = 0.07291666666666667 * std::pow(n, -4);
 
 				double* xptr = xslege.data(), * whtptr = whtslege.data();
-				for (int j = i + 1; j <= n; ++j)
+				for (Eigen::Index j = i + 1; j <= n; ++j)
 				{
 					double temp = std::cos(n0 * (j - 0.25));
 					*xptr++ = temp * (n2 / (temp * temp - 1.0) + n1);
@@ -92,7 +92,7 @@ namespace na
 					x0 = x1;
 					x1 = xptr[1];
 				}
-				for (int j = ifodd; j < i + ifodd; ++j)
+				for (Eigen::Index j = ifodd; j < i + ifodd; ++j)
 				{
 					int ifstop = 0;
 					for (int k = 0; k < 10; ++k)
@@ -144,20 +144,20 @@ namespace na
 			//   I. Bogaert, "Iteration-Free Computation of Gauss-Legendre Quadrature Nodes and Weights",
 			//   SIAM Journal on Scientific Computing, 2014
 			void quadrature_bogaert(
-				const int n,
+				const Eigen::Index n,
 				Eigen::VectorXd& xslege,
 				Eigen::VectorXd& whtslege)
 			{
 				assert((n > 100) && "n must be greater than 100 to yield machine precision in the IEEE 754 double-precision format");
 
-				const int i = n / 2;
-				const int ifodd = n % 2;
+				const Eigen::Index i = n / 2;
+				const Eigen::Index ifodd = n % 2;
 
 				const double vn = 1.0 / (n + 0.5);
 				const double vn2 = vn * vn;
 
 				double* xptr = xslege.data(), * whtptr = whtslege.data();
-				for (int j = 0; j < i; ++j)
+				for (Eigen::Index j = 0; j < i; ++j)
 				{
 					const double j0k = na::bessel::besselj0_zero(j + 1);
 					const double alpha = vn * j0k;
@@ -200,7 +200,7 @@ namespace na
 
 	namespace legendre
 	{
-		Eigen::VectorXd polynomial_coefficients(const int n)
+		Eigen::VectorXd polynomial_coefficients(const Eigen::Index n)
 		{
 			assert((n >= 0) && "n must be a non-negative integer");
 
@@ -221,10 +221,10 @@ namespace na
 				coefs1(0) = 1.0;
 				coefs2(0) = 0.0;
 				coefs2(1) = 1.0;
-				for (int i = 2; i <= n; ++i)
+				for (Eigen::Index i = 2; i <= n; ++i)
 				{
 					double a = 2.0 - 1.0 / i, b = 1.0 - 1.0 / i;
-					for (int j = 1; j <= i - 2; ++j)
+					for (Eigen::Index j = 1; j <= i - 2; ++j)
 					{
 						coefs(j) = a * coefs2(j - 1) - b * coefs1(j);
 					}
@@ -242,7 +242,7 @@ namespace na
 		}
 
 		double evaluate_polynomial(
-			const int n,
+			const Eigen::Index n,
 			const double x)
 		{
 			assert((n >= 0) && "n must be a non-negative integer");
@@ -254,7 +254,7 @@ namespace na
 			double pkm1, pk, pkp1;
 			pk = 1.0;
 			pkp1 = x;
-			for (int k = 1; k < n; ++k)
+			for (Eigen::Index k = 1; k < n; ++k)
 			{
 				pkm1 = pk;
 				pk = pkp1;
@@ -264,7 +264,7 @@ namespace na
 		}
 
 		double evaluate_derivative(
-			const int n,
+			const Eigen::Index n,
 			const double x)
 		{
 			assert((n >= 0) && "n must be a non-negative integer");
@@ -279,7 +279,7 @@ namespace na
 			val = 1.0;
 			pk = 1.0;
 			pkp1 = x;
-			for (int k = 1; k < n; ++k)
+			for (Eigen::Index k = 1; k < n; ++k)
 			{
 				pkm1 = pk;
 				pk = pkp1;
@@ -290,7 +290,7 @@ namespace na
 		}
 
 		void evaluate_polynomial(
-			const int n,
+			const Eigen::Index n,
 			const double x,
 			double& pol,
 			double& der)
@@ -308,7 +308,7 @@ namespace na
 			double pkm1, pk, pkp1;
 			pk = 1.0;
 			pkp1 = x;
-			for (int k = 1; k < n; ++k)
+			for (Eigen::Index k = 1; k < n; ++k)
 			{
 				pkm1 = pk;
 				pk = pkp1;
@@ -319,7 +319,7 @@ namespace na
 		}
 
 		void quadrature(
-			const int n,
+			const Eigen::Index n,
 			Eigen::VectorXd& xslege,
 			Eigen::VectorXd& whtslege)
 		{
@@ -337,7 +337,7 @@ namespace na
 		}
 
 		Eigen::VectorXd expansion_coefficients(
-			const int n,
+			const Eigen::Index n,
 			const Eigen::VectorXd& vals)
 		{
 			assert((n >= 1) && "n must be a positive integer");
@@ -348,7 +348,7 @@ namespace na
 		}
 
 		double evaluate_expansion(
-			const int n,
+			const Eigen::Index n,
 			const Eigen::VectorXd& coefs,
 			const double x)
 		{
@@ -361,7 +361,7 @@ namespace na
 				double pkm1, pk, pkp1;
 				pk = 1.0;
 				pkp1 = x;
-				for (int k = 1; k < n - 1; ++k)
+				for (Eigen::Index k = 1; k < n - 1; ++k)
 				{
 					pkm1 = pk;
 					pk = pkp1;
@@ -373,7 +373,7 @@ namespace na
 		}
 
 		void evaluate_expansion(
-			const int n,
+			const Eigen::Index n,
 			const Eigen::VectorXd& coefs,
 			const double x,
 			double& val,
@@ -391,7 +391,7 @@ namespace na
 				pk = 1.0;
 				pkp1 = x;
 				temp = 1.0;
-				for (int k = 1; k < n - 1; ++k)
+				for (Eigen::Index k = 1; k < n - 1; ++k)
 				{
 					pkm1 = pk;
 					pk = pkp1;
@@ -404,7 +404,7 @@ namespace na
 		}
 
 		double interpolate(
-			const int n,
+			const Eigen::Index n,
 			const Eigen::VectorXd& xslege,
 			const Eigen::VectorXd& whtslege,
 			const Eigen::VectorXd& vals,
@@ -412,7 +412,7 @@ namespace na
 		{
 			assert((n >= 1) && "n must be a positive integer");
 
-			for (int i = 0; i < n; ++i)
+			for (Eigen::Index i = 0; i < n; ++i)
 			{
 				if (x == xslege(i))
 				{
@@ -420,7 +420,7 @@ namespace na
 				}
 			}
 			Eigen::VectorXd whtsinterp(n);
-			for (int i = 0; i < n; ++i)
+			for (Eigen::Index i = 0; i < n; ++i)
 			{
 				// This barycentric weight differs from the literatures by sqrt(w_i) because it's factored into vals.
 				// But it will require multiyplying by sqrt(w_i) in the denominator.
@@ -430,10 +430,10 @@ namespace na
 		}
 
 		Eigen::MatrixXd interpolation_matrix(
-			const int n,
+			const Eigen::Index n,
 			const Eigen::VectorXd& xslege,
 			const Eigen::VectorXd& whtslege,
-			const int m,
+			const Eigen::Index m,
 			const Eigen::VectorXd& xsout,
 			const Eigen::VectorXd& whtsout)
 		{
@@ -444,11 +444,11 @@ namespace na
 			ainterp.setZero();
 
 			Eigen::VectorXd lambda(n);
-			for (int j = 0; j < n; ++j)
+			for (Eigen::Index j = 0; j < n; ++j)
 			{
 				lambda(j) = ((j % 2) ? -1.0 : 1.0) * std::sqrt(1.0 - std::pow(xslege(j), 2));
 			}
-			for (int i = 0; i < m; ++i)
+			for (Eigen::Index i = 0; i < m; ++i)
 			{
 				bool found = false;
 				double coeff = 0.0;
@@ -470,7 +470,7 @@ namespace na
 					continue;
 				}
 				coeff = std::sqrt(whtsout(i)) / coeff;
-				for (int j = 0; j < n; ++j)
+				for (Eigen::Index j = 0; j < n; ++j)
 				{
 					ainterp(i, j) = coeff * lambda(j) / (xsout(i) - xslege(j));
 				}
@@ -479,7 +479,7 @@ namespace na
 		}
 
 		Eigen::MatrixXd coefficient_matrix(
-			const int n,
+			const Eigen::Index n,
 			const Eigen::VectorXd& xslege,
 			const Eigen::VectorXd& whtslege)
 		{
@@ -488,7 +488,7 @@ namespace na
 			Eigen::MatrixXd umatr(n, n);
 			umatr.setZero();
 
-			for (int j = 0; j < n; ++j)
+			for (Eigen::Index j = 0; j < n; ++j)
 			{
 				double wht = std::sqrt(whtslege(j));
 				umatr(0, j) = wht * std::sqrt(0.5);
@@ -499,7 +499,7 @@ namespace na
 					x = xslege(j);
 					pk = 1.0;
 					pkp1 = x;
-					for (int k = 1; k < n - 1; ++k)
+					for (Eigen::Index k = 1; k < n - 1; ++k)
 					{
 						pkm1 = pk;
 						pk = pkp1;
@@ -512,7 +512,7 @@ namespace na
 		}
 
 		Eigen::VectorXd to_monomial(
-			const int n,
+			const Eigen::Index n,
 			const Eigen::VectorXd& coefs)
 		{
 			assert((n >= 1) && "n must be a positive integer");
@@ -523,12 +523,12 @@ namespace na
 
 			double v = 0.0, w = 0.0;
 			coefsout(0) = coefs(n - 1);
-			for (int j = n - 2; j >= 0; --j)
+			for (Eigen::Index j = n - 2; j >= 0; --j)
 			{
 				w = coefsout(0);
 				coefsout(0) = coefs(j) - v * z(0);
 				z(0) = w;
-				for (int i = 1; i <= n - j - 1; ++i)
+				for (Eigen::Index i = 1; i <= n - j - 1; ++i)
 				{
 					w = coefsout(i);
 					coefsout(i) = (2.0 * j + 1.0) * z(i - 1) / (j + 1.0) - v * z(i);
@@ -540,7 +540,7 @@ namespace na
 		}
 
 		Eigen::VectorXd from_monomial(
-			const int n,
+			const Eigen::Index n,
 			const Eigen::VectorXd& coefs)
 		{
 			assert((n >= 1) && "n must be a positive integer");
@@ -551,13 +551,13 @@ namespace na
 
 			coefsout(0) = coefs(n - 2);
 			coefsout(1) = coefs(n - 1);
-			for (int k = 1; k <= n - 2; ++k)
+			for (Eigen::Index k = 1; k <= n - 2; ++k)
 			{
 				q(0) = coefsout(0);
 				coefsout(0) = coefs(n - k - 2) + coefsout(1) / 3.0;
 				if (k >= 2)
 				{
-					for (int j = 1; j <= k - 1; ++j)
+					for (Eigen::Index j = 1; j <= k - 1; ++j)
 					{
 						q(j) = coefsout(j);
 						coefsout(j) = (j + 1.0) * coefsout(j + 1) / (2.0 * j + 3.0) + j * q(j - 1) / (2.0 * j - 1.0);

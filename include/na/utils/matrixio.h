@@ -17,19 +17,19 @@ namespace na
 		template <typename T, bool coordinate>
 		constexpr const char* mtx_data_format = nullptr;
 
-		EXPLICIT_SPEC constexpr const char* mtx_data_format<int, false> = "%i";
+		EXPLICIT_SPEC constexpr const char* mtx_data_format<int, false> = "%d";
 		EXPLICIT_SPEC constexpr const char* mtx_data_format<float, false> = "%g";
 		EXPLICIT_SPEC constexpr const char* mtx_data_format<double, false> = "%lg";
 		EXPLICIT_SPEC constexpr const char* mtx_data_format<long double, false> = "%Lg";
 		EXPLICIT_SPEC constexpr const char* mtx_data_format<std::complex<float>, false> = "%g %g";
 		EXPLICIT_SPEC constexpr const char* mtx_data_format<std::complex<double>, false> = "%lg %lg";
 		EXPLICIT_SPEC constexpr const char* mtx_data_format<std::complex<long double>, false> = "%Lg %Lg";
-		EXPLICIT_SPEC constexpr const char* mtx_data_format<float, true> = "%i %i %g";
-		EXPLICIT_SPEC constexpr const char* mtx_data_format<double, true> = "%i %i %lg";
-		EXPLICIT_SPEC constexpr const char* mtx_data_format<long double, true> = "%i %i %Lg";
-		EXPLICIT_SPEC constexpr const char* mtx_data_format<std::complex<float>, true> = "%i %i %g %g";
-		EXPLICIT_SPEC constexpr const char* mtx_data_format<std::complex<double>, true> = "%i %i %lg %lg";
-		EXPLICIT_SPEC constexpr const char* mtx_data_format<std::complex<long double>, true> = "%i %i %Lg %Lg";
+		EXPLICIT_SPEC constexpr const char* mtx_data_format<float, true> = "%lld %lld %g";
+		EXPLICIT_SPEC constexpr const char* mtx_data_format<double, true> = "%lld %lld %lg";
+		EXPLICIT_SPEC constexpr const char* mtx_data_format<long double, true> = "%lld %lld %Lg";
+		EXPLICIT_SPEC constexpr const char* mtx_data_format<std::complex<float>, true> = "%lld %lld %g %g";
+		EXPLICIT_SPEC constexpr const char* mtx_data_format<std::complex<double>, true> = "%lld %lld %lg %lg";
+		EXPLICIT_SPEC constexpr const char* mtx_data_format<std::complex<long double>, true> = "%lld %lld %Lg %Lg";
 	}
 
 	template <typename Derived>
@@ -80,7 +80,7 @@ namespace na
 		// The while loop above should have consumed the size line, if it exists. The following code does the actual check on the size line.
 		if constexpr (std::is_same_v<Derived, Eigen::Matrix<typename Derived::Scalar, Derived::RowsAtCompileTime, Derived::ColsAtCompileTime, Derived::Options, Derived::MaxRowsAtCompileTime, Derived::MaxColsAtCompileTime>>)
 		{
-			int rows, cols;
+			Eigen::Index rows, cols;
 			std::stringstream(line) >> rows >> cols;
 			if ((rows <= 0) || (cols <= 0))
 			{
@@ -136,7 +136,7 @@ namespace na
 		}
 		else
 		{
-			int rows, cols, nnz;
+			Eigen::Index rows, cols, nnz;
 			std::stringstream(line) >> rows >> cols >> nnz;
 			if ((rows <= 0) || (cols <= 0) || (nnz <= 0))
 			{
@@ -149,7 +149,7 @@ namespace na
 			triplets.reserve(nnz);
 			while (std::getline(file, line))
 			{
-				int row, col;
+				Eigen::Index row, col;
 				typename Derived::RealScalar real, imag;
 				if constexpr (na::is_complex_v<typename Derived::Scalar>)
 				{

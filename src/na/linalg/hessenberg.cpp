@@ -56,7 +56,7 @@ namespace na
 				}
 
 				inline void herm_p_rank1_iter(
-					const int n,
+					const Eigen::Index n,
 					Eigen::Ref<Eigen::VectorXcd> p,
 					Eigen::Ref<Eigen::VectorXcd> q,
 					Eigen::Ref<Eigen::VectorXcd> diag,
@@ -67,7 +67,7 @@ namespace na
 					Eigen::MatrixXcd uus(2 * n - 2, 2);
 					q2 = q;
 					subdiag = supdiag.conjugate();
-					for (int k = n - 1; k > 0; --k)
+					for (Eigen::Index k = n - 1; k > 0; --k)
 					{
 						xy(0) = supdiag(k - 1) + p(k - 1) * std::conj(q(k));
 						xy(1) = diag(k) + p(k) * std::conj(q(k));
@@ -93,13 +93,13 @@ namespace na
 						}
 						herm_p_rank1_two_elems_rotate10(uus.block<2, 2>(2 * k - 2, 0), q2(k - 1), q2(k));
 					}
-					for (int k = n - 1; k > 0; --k)
+					for (Eigen::Index k = n - 1; k > 0; --k)
 					{
 						supdiag(k - 1) = -p(k - 1) * std::conj(q(k));
 						herm_p_rank1_two_elems_rotate(uus.block<2, 2>(2 * k - 2, 0), q(k - 1), q(k));
 					}
 					uus = uus.conjugate();
-					for (int k = n - 1; k > 0; --k)
+					for (Eigen::Index k = n - 1; k > 0; --k)
 					{
 						herm_p_rank1_two_elems_rotate(uus.block<2, 2>(2 * k - 2, 0), diag(k - 1), supdiag(k - 1));
 						herm_p_rank1_two_elems_rotate01(uus.block<2, 2>(2 * k - 2, 0), subdiag(k - 1), diag(k));
@@ -111,7 +111,7 @@ namespace na
 					Eigen::Ref<Eigen::VectorXcd> supdiag,
 					Eigen::Ref<Eigen::VectorXcd> p,
 					Eigen::Ref<Eigen::VectorXcd> q,
-					const int n,
+					const Eigen::Index n,
 					const double eps)
 				{
 					Eigen::dcomplex d1, d2, s1, s2, aa, bb, cc, clam, clam1, clam2, clamsum;
@@ -134,7 +134,7 @@ namespace na
 							clam = clam2;
 						}
 						clamsum += clam;
-						for (int i = 0; i < n; ++i)
+						for (Eigen::Index i = 0; i < n; ++i)
 						{
 							diag(i) -= clam;
 						}
@@ -163,15 +163,15 @@ namespace na
 				Eigen::VectorXcd& supdiag,
 				Eigen::VectorXcd& p,
 				Eigen::VectorXcd& q,
-				const int n,
+				const Eigen::Index n,
 				const double eps)
 			{
 				na::internal::linalg::hessenberg::herm_p_rank1_iter(n, p, q, diag, supdiag);
 				na::internal::linalg::hessenberg::herm_p_rank1_iter(n, p, q, diag, supdiag);
 				na::internal::linalg::hessenberg::herm_p_rank1_iter(n, p, q, diag, supdiag);
-				for (int i = 0; i < n - 1; ++i)
+				for (Eigen::Index i = 0; i < n - 1; ++i)
 				{
-					const int nn = n - i;
+					const Eigen::Index nn = n - i;
 					na::internal::linalg::hessenberg::herm_p_rank1_one_dimen(diag.segment(i, nn), supdiag.segment(i, nn - 1), p.segment(i, nn), q.segment(i, nn), nn, eps);
 					diag(i) += p(i) * std::conj(q(i));
 				}

@@ -8,7 +8,7 @@ namespace na
 	namespace chebyshev
 	{
 		void quadrature(
-			const int n,
+			const Eigen::Index n,
 			Eigen::VectorXd& xscheb,
 			Eigen::VectorXd& whtscheb)
 		{
@@ -18,7 +18,7 @@ namespace na
 			whtscheb.setConstant(n, 2.0);
 
 			double tj, tjm1, tjm2;
-			for (int i = 0; i < n; ++i)
+			for (Eigen::Index i = 0; i < n; ++i)
 			{
 				tjm2 = 1.0;
 				tjm1 = xscheb(i);
@@ -37,7 +37,7 @@ namespace na
 		}
 
 		Eigen::VectorXd expansion_coefficients(
-			const int n,
+			const Eigen::Index n,
 			const Eigen::VectorXd& vals)
 		{
 			assert((n >= 1) && "n must be a positive integer");
@@ -50,7 +50,7 @@ namespace na
 		}
 
 		double evaluate_expansion(
-			const int n,
+			const Eigen::Index n,
 			const Eigen::VectorXd& coefs,
 			const double x)
 		{
@@ -64,7 +64,7 @@ namespace na
 			pjm2 = 1.0;
 			pjm1 = x;
 			double val = coefs(0) * pjm2 + coefs(1) * pjm1;
-			for (int j = 2; j <= n; ++j)
+			for (Eigen::Index j = 2; j <= n; ++j)
 			{
 				pj = 2.0 * x * pjm1 - pjm2;
 				pjm2 = pjm1;
@@ -75,7 +75,7 @@ namespace na
 		}
 
 		void coefficient_matrix(
-			const int n,
+			const Eigen::Index n,
 			const Eigen::VectorXd& xscheb,
 			const Eigen::VectorXd& whtscheb,
 			Eigen::MatrixXd& umatr,
@@ -87,7 +87,7 @@ namespace na
 			vmatr.resize(n, n);
 
 			double tj, tjm1, tjm2;
-			for (int i = 0; i < n; ++i)
+			for (Eigen::Index i = 0; i < n; ++i)
 			{
 				tjm2 = 1.0;
 				tjm1 = xscheb(i);
@@ -112,7 +112,7 @@ namespace na
 	namespace chebyshev_pract
 	{
 		void quadrature(
-			const int n,
+			const Eigen::Index n,
 			Eigen::VectorXd& xscheb,
 			Eigen::VectorXd& whtscheb)
 		{
@@ -122,11 +122,11 @@ namespace na
 			whtscheb.setConstant(n, 1.0);
 
 			double tj, tjm1, tjm2;
-			for (int i = 0; i < n; ++i)
+			for (Eigen::Index i = 0; i < n; ++i)
 			{
 				tjm2 = 1.0;
 				tjm1 = xscheb(i);
-				for (int j = 2; j < n; ++j)
+				for (Eigen::Index j = 2; j < n; ++j)
 				{
 					tj = 2.0 * xscheb(i) * tjm1 - tjm2;
 					tjm2 = tjm1;
@@ -143,7 +143,7 @@ namespace na
 		}
 
 		void coefficient_matrix(
-			const int n,
+			const Eigen::Index n,
 			const Eigen::VectorXd& xscheb,
 			const Eigen::VectorXd& whtscheb,
 			Eigen::MatrixXd& umatr,
@@ -155,11 +155,11 @@ namespace na
 			vmatr.resize(n, n);
 
 			double tj, tjm1, tjm2;
-			for (int i = 0; i < n; ++i)
+			for (Eigen::Index i = 0; i < n; ++i)
 			{
 				tjm2 = 1.0;
 				tjm1 = xscheb(i);
-				for (int j = 2; j < n; ++j)
+				for (Eigen::Index j = 2; j < n; ++j)
 				{
 					tj = 2.0 * xscheb(i) * tjm1 - tjm2;
 					tjm2 = tjm1;
@@ -178,7 +178,7 @@ namespace na
 		}
 
 		Eigen::MatrixXd differentiation_matrix(
-			const int n,
+			const Eigen::Index n,
 			const Eigen::VectorXd& xscheb)
 		{
 			assert((n >= 1) && "n must be a positive integer");
@@ -186,11 +186,11 @@ namespace na
 			Eigen::MatrixXd dmatr(n, n);
 			double ci = -1.0;
 			double cj = -1.0;
-			for (int i = 0; i < n; ++i)
+			for (Eigen::Index i = 0; i < n; ++i)
 			{
 				ci = -ci;
 				cj = -1.0;
-				for (int j = 0; j < n; ++j)
+				for (Eigen::Index j = 0; j < n; ++j)
 				{
 					cj = -cj;
 					if (i == j)

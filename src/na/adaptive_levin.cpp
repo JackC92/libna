@@ -25,7 +25,7 @@ namespace na
 			const std::function<double(double)> g,
 			const double a,
 			const double b,
-			const int k,
+			const Eigen::Index k,
 			const Eigen::VectorXd& xscheb,
 			const Eigen::MatrixXd& D)
 		{
@@ -47,7 +47,7 @@ namespace na
 			const std::function<double(double)> g,
 			const double a,
 			const double b,
-			const int k,
+			const Eigen::Index k,
 			const Eigen::VectorXd& xscheb,
 			const Eigen::MatrixXd& D)
 		{
@@ -72,7 +72,7 @@ namespace na
 		const double a,
 		const double b,
 		const double tol,
-		const int k)
+		const Eigen::Index k)
 	{
 		Eigen::VectorXd xscheb, whtscheb;
 		na::chebyshev_pract::quadrature(k, xscheb, whtscheb);
@@ -107,7 +107,7 @@ namespace na
 		const double a,
 		const double b,
 		const double tol,
-		const int k)
+		const Eigen::Index k)
 	{
 		Eigen::VectorXd xscheb, whtscheb;
 		na::chebyshev_pract::quadrature(k, xscheb, whtscheb);

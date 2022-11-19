@@ -66,7 +66,7 @@ namespace na
 		// 
 		// Output parameters:
 		//   coefs - the coefficients of the Legendre polynomial
-		Eigen::VectorXd polynomial_coefficients(const int n);
+		Eigen::VectorXd polynomial_coefficients(const Eigen::Index n);
 
 		// Evaluate the Legendre polynomial of degree n at the point x
 		//
@@ -77,7 +77,7 @@ namespace na
 		// Output parameters:
 		//   val - the value of the Legendre polynomial at the point x
 		double evaluate_polynomial(
-			const int n,
+			const Eigen::Index n,
 			const double x);
 
 		// Evaluate the derivative of the Legendre polynomial of degree
@@ -90,7 +90,7 @@ namespace na
 		// Output parameters:
 		//   val - the value of the Legendre polynomial at the point x
 		double evaluate_derivative(
-			const int n,
+			const Eigen::Index n,
 			const double x);
 
 		// Evaluate the Legendre polynomial of degree n and its derivative
@@ -104,7 +104,7 @@ namespace na
 		//   pol - the value of the Legendre polynomial at the point x
 		//   der - the value of the derivative of the Legendre polynomial at the point x
 		void evaluate_polynomial(
-			const int n,
+			const Eigen::Index n,
 			const double x,
 			double& pol,
 			double& der);
@@ -118,7 +118,7 @@ namespace na
 		//   xslege - the nodes of the desired quadrature rule
 		//   whtslege - the weights of the desired quadrature rule
 		void quadrature(
-			const int n,
+			const Eigen::Index n,
 			Eigen::VectorXd& xslege,
 			Eigen::VectorXd& whtslege);
 
@@ -132,7 +132,7 @@ namespace na
 		// Output parameters:
 		//   coefs - an array specifying the coefficients
 		Eigen::VectorXd expansion_coefficients(
-			const int n,
+			const Eigen::Index n,
 			const Eigen::VectorXd& vals);
 
 		// Evaluate a real-valued expansion of the form (1) given the vector
@@ -146,7 +146,7 @@ namespace na
 		// Output parameters:
 		//   val - the value of the expansion at the point x
 		double evaluate_expansion(
-			const int n,
+			const Eigen::Index n,
 			const Eigen::VectorXd& coefs,
 			const double x);
 
@@ -162,7 +162,7 @@ namespace na
 		//   pol - the value of the expansion at the point x
 		//   der - the value of the derivative of the expansion at the point x
 		void evaluate_expansion(
-			const int n,
+			const Eigen::Index n,
 			const Eigen::VectorXd& coefs,
 			const double x,
 			double& pol,
@@ -181,7 +181,7 @@ namespace na
 		// Output parameters:
 		//   valout - the value of (1) at the point x
 		double interpolate(
-			const int n,
+			const Eigen::Index n,
 			const Eigen::VectorXd& xslege,
 			const Eigen::VectorXd& whtslege,
 			const Eigen::VectorXd& vals,
@@ -200,10 +200,10 @@ namespace na
 		// Output parameters:
 		//   ainterp - the (m,n) interpolation matrix
 		Eigen::MatrixXd interpolation_matrix(
-			const int n,
+			const Eigen::Index n,
 			const Eigen::VectorXd& xslege,
 			const Eigen::VectorXd& whtslege,
-			const int m,
+			const Eigen::Index m,
 			const Eigen::VectorXd& xsout,
 			const Eigen::VectorXd& whtsout);
 
@@ -219,7 +219,7 @@ namespace na
 		// Output parameters:
 		//   umatr - the (n,n) matrix which takes values to coefficients
 		Eigen::MatrixXd coefficient_matrix(
-			const int n,
+			const Eigen::Index n,
 			const Eigen::VectorXd& xslege,
 			const Eigen::VectorXd& whtslege);
 
@@ -233,7 +233,7 @@ namespace na
 		// Output parameters:
 		//   coefsout - an array specifying the coefficients in the monomial basis
 		Eigen::VectorXd to_monomial(
-			const int n,
+			const Eigen::Index n,
 			const Eigen::VectorXd& coefs);
 
 		// Compute the vector (2) of coefficients of a polynomial from the vector
@@ -246,7 +246,7 @@ namespace na
 		// Output parameters:
 		//   coefsout - an array specifying the coefficients (2)
 		Eigen::VectorXd from_monomial(
-			const int n,
+			const Eigen::Index n,
 			const Eigen::VectorXd& coefs);
 	}
 }

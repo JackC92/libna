@@ -8,20 +8,20 @@ namespace na
 	namespace linalg
 	{
 		Eigen::SparseMatrix<double> colleague_matrix(
-			const int n,
+			const Eigen::Index n,
 			const Eigen::VectorXd& coefs);
 
 		Eigen::SparseMatrix<Eigen::dcomplex> colleague_matrix(
-			const int n,
+			const Eigen::Index n,
 			const Eigen::VectorXcd& coefs);
 
 		Eigen::VectorXcd colleague_roots(
-			const int n,
+			const Eigen::Index n,
 			const Eigen::VectorXcd& coefs,
 			const double eps);
 
 		Eigen::VectorXd colleague_roots_m1p1(
-			const int n,
+			const Eigen::Index n,
 			const Eigen::VectorXd& coefs,
 			const double eps,
 			const double delta,

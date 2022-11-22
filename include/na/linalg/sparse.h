@@ -1,5 +1,6 @@
-#ifndef NA_LINALG_REPDIAG_H
-#define NA_LINALG_REPDIAG_H
+#ifndef NA_LINALG_SPARSE_H
+#define NA_LINALG_SPARSE_H
+#include <cstring>
 #include "Eigen/Core"
 #include "Eigen/Sparse"
 
@@ -50,4 +51,4 @@ namespace na
 	}
 }
 
-#endif // !NA_LINALG_REPDIAG_H
+#endif // !NA_LINALG_SPARSE_H

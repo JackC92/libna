@@ -5,6 +5,8 @@ set(CMAKE_NO_SYSTEM_FROM_IMPORTED 1) # include directories using -i instead of -
 
 project("NumericalAlgorithms")
 
+option(ENABLE_CHOLMOD "Enable CHOLMOD linear system solver" ON)
+
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
@@ -59,8 +61,6 @@ else()
     message(FATAL_ERROR "Unrecognized compiler [${CMAKE_CXX_COMPILER_ID}]")
 endif()
 
-find_package(Eigen3 3.4 REQUIRED NO_MODULE)
-
 add_subdirectory("external/googletest")
 
 include_directories("include/")
@@ -72,14 +72,13 @@ file(GLOB_RECURSE TEST_FILES tests/test_*.cpp)
 
 add_library(core ${SRC_FILES} ${HEADER_FILES})
 set_target_properties(core PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(core Eigen3::Eigen)
 
 add_executable(libna "libna.cpp")
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT libna)
-target_link_libraries(libna core Eigen3::Eigen)
+target_link_libraries(libna PRIVATE core)
 
 add_executable(tests "tests.cpp" ${TEST_FILES})
-target_link_libraries(tests core Eigen3::Eigen gtest gtest_main)
+target_link_libraries(tests PRIVATE core gtest gtest_main)
 target_include_directories(tests PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/external/googletest/googletest/include")
 add_test(NAME core_tests COMMAND tests)
 
@@ -96,4 +95,12 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
         string(REPLACE "/" "\\" source_path_rel_msvc "${source_path_rel}")
         source_group("Source Files\\${source_path_rel_msvc}" FILES "${source}")
     endforeach()
+endif()
+
+find_package(Eigen3 3.4 REQUIRED NO_MODULE)
+target_link_libraries(core PUBLIC Eigen3::Eigen)
+
+if (ENABLE_CHOLMOD)
+    find_package(SuiteSparse CONFIG REQUIRED)
+    target_link_libraries(core PUBLIC SuiteSparse::cholmod)
 endif()

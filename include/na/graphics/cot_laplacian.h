@@ -1,5 +1,5 @@
-#ifndef NA_GRAPHICS_COTANGENT_LAPLACIAN_H
-#define NA_GRAPHICS_COTANGENT_LAPLACIAN_H
+#ifndef NA_GRAPHICS_COT_LAPLACIAN_H
+#define NA_GRAPHICS_COT_LAPLACIAN_H
 #include <vector>
 #include "Eigen/Core"
 #include "Eigen/Sparse"
@@ -9,7 +9,7 @@ namespace na
 	namespace graphics
 	{
 		template <typename DerivedV, typename DerivedT, typename Scalar, int Options, typename StorageIndex>
-		void cotangent_laplacian_tet(
+		void cot_laplacian_tet(
 			const Eigen::MatrixBase<DerivedV>& V,
 			const Eigen::MatrixBase<DerivedT>& T,
 			Eigen::SparseMatrix<Scalar, Options, StorageIndex>& L)
@@ -55,4 +55,4 @@ namespace na
 	}
 }
 
-#endif // !NA_GRAPHICS_COTANGENT_LAPLACIAN_H
+#endif // !NA_GRAPHICS_COT_LAPLACIAN_H

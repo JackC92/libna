@@ -62,20 +62,20 @@ namespace na
 		// in the monomial basis
 		//
 		// Input parameters:
-		//   n - the degree of the Legendre polynomial
+		//   n: the degree of the Legendre polynomial
 		// 
 		// Output parameters:
-		//   coefs - the coefficients of the Legendre polynomial
+		//   coefs: the coefficients of the Legendre polynomial
 		Eigen::VectorXd polynomial_coefficients(const Eigen::Index n);
 
 		// Evaluate the Legendre polynomial of degree n at the point x
 		//
 		// Input parameters:
-		//   n - the degree of the Legendre polynomial
-		//   x - the point at which to evaluate the Legendre polynomial
+		//   n: the degree of the Legendre polynomial
+		//   x: the point at which to evaluate the Legendre polynomial
 		// 
 		// Output parameters:
-		//   val - the value of the Legendre polynomial at the point x
+		//   val: the value of the Legendre polynomial at the point x
 		double evaluate_polynomial(
 			const Eigen::Index n,
 			const double x);
@@ -84,11 +84,11 @@ namespace na
 		// n at the point x
 		//
 		// Input parameters:
-		//   n - the degree of the Legendre polynomial
-		//   x - the point at which to evaluate the Legendre polynomial
+		//   n: the degree of the Legendre polynomial
+		//   x: the point at which to evaluate the Legendre polynomial
 		// 
 		// Output parameters:
-		//   val - the value of the Legendre polynomial at the point x
+		//   val: the value of the Legendre polynomial at the point x
 		double evaluate_derivative(
 			const Eigen::Index n,
 			const double x);
@@ -97,12 +97,12 @@ namespace na
 		// at the point x
 		//
 		// Input parameters:
-		//   n - the degree of the Legendre polynomial
-		//   x - the point at which to evaluate the Legendre polynomial
+		//   n: the degree of the Legendre polynomial
+		//   x: the point at which to evaluate the Legendre polynomial
 		// 
 		// Output parameters:
-		//   pol - the value of the Legendre polynomial at the point x
-		//   der - the value of the derivative of the Legendre polynomial at the point x
+		//   pol: the value of the Legendre polynomial at the point x
+		//   der: the value of the derivative of the Legendre polynomial at the point x
 		void evaluate_polynomial(
 			const Eigen::Index n,
 			const double x,
@@ -112,11 +112,11 @@ namespace na
 		// Form the n-point Gauss-Legendre quadrature rule.
 		//
 		// Input parameters:
-		//   n - the length of the desired quadrature rule
+		//   n: the length of the desired quadrature rule
 		//
 		// Output parameters:
-		//   xslege - the nodes of the desired quadrature rule
-		//   whtslege - the weights of the desired quadrature rule
+		//   xslege: the nodes of the desired quadrature rule
+		//   whtslege: the weights of the desired quadrature rule
 		void quadrature(
 			const Eigen::Index n,
 			Eigen::VectorXd& xslege,
@@ -126,11 +126,11 @@ namespace na
 		// expansions of the form (1) given the vectors of their scaled values (3)
 		//
 		// Input parameters:
-		//   n - the number of terms in the expansion
-		//   vals - the *scaled* values of (1) at the n Gauss-Legendre nodes
+		//   n: the number of terms in the expansion
+		//   vals: the *scaled* values of (1) at the n Gauss-Legendre nodes
 		//
 		// Output parameters:
-		//   coefs - an array specifying the coefficients
+		//   coefs: an array specifying the coefficients
 		Eigen::VectorXd expansion_coefficients(
 			const Eigen::Index n,
 			const Eigen::VectorXd& vals);
@@ -139,9 +139,9 @@ namespace na
 		// (2) of its expansion coefficients.
 		//
 		// Input parameters:
-		//   n - the number of terms in the expansion
-		//   coefs - an array specifying the coefficients
-		//   x - the point at which to evaluate (1)
+		//   n: the number of terms in the expansion
+		//   coefs: an array specifying the coefficients
+		//   x: the point at which to evaluate (1)
 		//
 		// Output parameters:
 		//   val - the value of the expansion at the point x
@@ -154,9 +154,9 @@ namespace na
 		// derivatives at a specified point given the vector (2) of coefficients
 		//
 		// Input parameters:
-		//   n - the number of terms in the expansion
-		//   coefs - an array specifying the coefficients
-		//   x - the point at which to evaluate (1)
+		//   n: the number of terms in the expansion
+		//   coefs: an array specifying the coefficients
+		//   x: the point at which to evaluate (1)
 		//
 		// Output parameters:
 		//   pol - the value of the expansion at the point x
@@ -172,14 +172,14 @@ namespace na
 		// the form (1) at a specified points.
 		//
 		// Input parameters:
-		//   n - the number of terms in the expansion (1)
-		//   (xslege,whtslege) - the nodes and weights of the n-point Guass-Legendre
+		//   n: the number of terms in the expansion (1)
+		//   (xslege,whtslege): the nodes and weights of the n-point Guass-Legendre
 		//     quadrature rule
-		//   vals - the *scaled* values of (1) at the n Gauss-Legendre nodes
-		//   x - the point at which to evaluate (1)
+		//   vals: the *scaled* values of (1) at the n Gauss-Legendre nodes
+		//   x: the point at which to evaluate (1)
 		//
 		// Output parameters:
-		//   valout - the value of (1) at the point x
+		//   valout: the value of (1) at the point x
 		double interpolate(
 			const Eigen::Index n,
 			const Eigen::VectorXd& xslege,
@@ -191,14 +191,14 @@ namespace na
 		// nodes to its scaled values at the nodes of a user-specified quadrature rule.
 		//
 		// Input parameters:
-		//   n - the number of terms in the expansion (1)
-		//   (xslege,whtslege) - the nodes and weights of the n-point Guass-Legendre
+		//   n: the number of terms in the expansion (1)
+		//   (xslege,whtslege): the nodes and weights of the n-point Guass-Legendre
 		//     quadrature rule
-		//   m - the number of points in the output target quadrature rule
-		//   (xsout,whtsout) - the nodes and weights of the output quadrature rule
+		//   m: the number of points in the output target quadrature rule
+		//   (xsout,whtsout): the nodes and weights of the output quadrature rule
 		//
 		// Output parameters:
-		//   ainterp - the (m,n) interpolation matrix
+		//   ainterp: the (m,n) interpolation matrix
 		Eigen::MatrixXd interpolation_matrix(
 			const Eigen::Index n,
 			const Eigen::VectorXd& xslege,
@@ -212,12 +212,12 @@ namespace na
 		// expansion coefficients.
 		//
 		// Input parameters:
-		//   n - the number of terms in the expansion
-		//   xslege - the nodes of the n-point Gauss-Legendre quadrature rule
-		//   whtslege - the weights of the n-point Gauss-Legendre rule
+		//   n: the number of terms in the expansion
+		//   xslege: the nodes of the n-point Gauss-Legendre quadrature rule
+		//   whtslege: the weights of the n-point Gauss-Legendre rule
 		//
 		// Output parameters:
-		//   umatr - the (n,n) matrix which takes values to coefficients
+		//   umatr: the (n,n) matrix which takes values to coefficients
 		Eigen::MatrixXd coefficient_matrix(
 			const Eigen::Index n,
 			const Eigen::VectorXd& xslege,
@@ -227,11 +227,11 @@ namespace na
 		// in the monomial basis.
 		//
 		// Input parameters:
-		//   n - the number of terms in the expansion
-		//   coefs - an array specifying the coefficients (2)
+		//   n: the number of terms in the expansion
+		//   coefs: an array specifying the coefficients (2)
 		//
 		// Output parameters:
-		//   coefsout - an array specifying the coefficients in the monomial basis
+		//   coefsout: an array specifying the coefficients in the monomial basis
 		Eigen::VectorXd to_monomial(
 			const Eigen::Index n,
 			const Eigen::VectorXd& coefs);
@@ -240,11 +240,11 @@ namespace na
 		// of coefficients in the monomial basis.
 		//
 		// Input parameters:
-		//   n - the number of terms in the expansion
-		//   coefs - an array specifying the coefficients in the monomial basis
+		//   n: the number of terms in the expansion
+		//   coefs: an array specifying the coefficients in the monomial basis
 		//
 		// Output parameters:
-		//   coefsout - an array specifying the coefficients (2)
+		//   coefsout: an array specifying the coefficients (2)
 		Eigen::VectorXd from_monomial(
 			const Eigen::Index n,
 			const Eigen::VectorXd& coefs);

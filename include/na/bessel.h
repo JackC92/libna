@@ -11,19 +11,19 @@ namespace na
 		// Compute the value BesselJZero[0, k]
 		//
 		// Input parameters:
-		//   k - the index of the zero of BesselJ[0, x]
+		//   k: the index of the zero of BesselJ[0, x]
 		//
 		// Output parameters:
-		//   val - the value of the zero of BesselJ[0, x]
+		//   val: the value of the zero of BesselJ[0, x]
 		double besselj0_zero(const int k);
 
 		// Compute the square of BesselJ[1, BesselJZero[0, k]]
 		//
 		// Input parameters:
-		//   k - the index of the zero of BesselJ[0, x]
+		//   k: the index of the zero of BesselJ[0, x]
 		//
 		// Output parameters:
-		//   val - the square of BesselJ[1, BesselJZero[0, k]]
+		//   val: the square of BesselJ[1, BesselJZero[0, k]]
 		double besselj1_squared(const int k);
 	}
 }

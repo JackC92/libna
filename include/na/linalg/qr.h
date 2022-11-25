@@ -10,11 +10,11 @@ namespace na
 		// such that A = L * Q^'.
 		//
 		// Input parameters:
-		//   A - the (n,n) real matrix to be decomposed
+		//   A: the (n,n) real matrix to be decomposed
 		//
 		// Output parameters:
-		//   Q - an (n,n) orthogonal matrix
-		//   L - an (n,n) lower triangular matrix
+		//   Q: an (n,n) orthogonal matrix
+		//   L: an (n,n) lower triangular matrix
 		void qr_factorize(
 			const Eigen::MatrixXd& A,
 			Eigen::MatrixXd& Q,
@@ -25,12 +25,12 @@ namespace na
 		// previous call to qr_factorize().
 		//
 		// Input parameters:
-		//   Q - an (n,n) orthogonal matrix
-		//   L - an (n,n) lower triangular matrix
-		//   y - the right-hand side of the system of linear algebraic equations
+		//   Q: an (n,n) orthogonal matrix
+		//   L: an (n,n) lower triangular matrix
+		//   y: the right-hand side of the system of linear algebraic equations
 		//
 		// Output parameters:
-		//   x - the solution to the system of linear algebraic equations
+		//   x: the solution to the system of linear algebraic equations
 		void qr_solve(
 			const Eigen::MatrixXd& Q,
 			const Eigen::MatrixXd& L,
@@ -41,11 +41,11 @@ namespace na
 		// such that A = L * Q^*.
 		//
 		// Input parameters:
-		//   A - the (n,n) complex matrix to be decomposed
+		//   A: the (n,n) complex matrix to be decomposed
 		//
 		// Output parameters:
-		//   Q - an (n,n) unitary matrix
-		//   L - an (n,n) lower triangular matrix
+		//   Q: an (n,n) unitary matrix
+		//   L: an (n,n) lower triangular matrix
 		void cqr_factorize(
 			const Eigen::MatrixXcd& A,
 			Eigen::MatrixXcd& Q,
@@ -56,12 +56,12 @@ namespace na
 		// previous call to cqr_factorize().
 		//
 		// Input parameters:
-		//   Q - an (n,n) unitary matrix
-		//   L - an (n,n) lower triangular matrix
-		//   y - the right-hand side of the system of linear algebraic equations
+		//   Q: an (n,n) unitary matrix
+		//   L: an (n,n) lower triangular matrix
+		//   y: the right-hand side of the system of linear algebraic equations
 		//
 		// Output parameters:
-		//   x - the solution to the system of linear algebraic equations
+		//   x: the solution to the system of linear algebraic equations
 		void cqr_solve(
 			const Eigen::MatrixXcd& Q,
 			const Eigen::MatrixXcd& L,

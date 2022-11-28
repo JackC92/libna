@@ -19,7 +19,7 @@ namespace na
 				double& der)
 			{
 				static bool called = false;
-				static Eigen::ArrayXd aux(120);
+				static Eigen::VectorXd aux(120);
 
 				if (!called)
 				{

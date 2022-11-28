@@ -1,5 +1,5 @@
-#ifndef NA_LEGENDRE_H
-#define NA_LEGENDRE_H
+#ifndef NA_SPECIAL_LEGENDRE_H
+#define NA_SPECIAL_LEGENDRE_H
 #include "Eigen/Core"
 
 // This file contains code for constructing Guass-Legendre quadrature rules, and for
@@ -251,4 +251,4 @@ namespace na
 	}
 }
 
-#endif // !NA_LEGENDRE_H
+#endif // !NA_SPECIAL_LEGENDRE_H

@@ -1,5 +1,5 @@
-#ifndef NA_CHEBYSHEV_H
-#define NA_CHEBYSHEV_H
+#ifndef NA_SPECIAL_CHEBYSHEV_H
+#define NA_SPECIAL_CHEBYSHEV_H
 #include "Eigen/Core"
 
 namespace na
@@ -48,4 +48,4 @@ namespace na
 	}
 }
 
-#endif // !NA_CHEBYSHEV_H
+#endif // !NA_SPECIAL_CHEBYSHEV_H

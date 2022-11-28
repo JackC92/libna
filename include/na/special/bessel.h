@@ -1,5 +1,5 @@
-#ifndef NA_BESSEL_H
-#define NA_BESSEL_H
+#ifndef NA_SPECIAL_BESSEL_H
+#define NA_SPECIAL_BESSEL_H
 
 // Following the notation of Mathematica, we define
 //  - BesselJ[n, x]: the nth-order Bessel function of the first kind J_n(x), where n is a non-negative integer and x is a non-negative real number.
@@ -28,4 +28,4 @@ namespace na
 	}
 }
 
-#endif // !NA_BESSEL_H
+#endif // !NA_SPECIAL_BESSEL_H

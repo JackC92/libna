@@ -1,8 +1,8 @@
-#include "na/legendre.h"
+#include "na/special/legendre.h"
 #include <cassert>
 #include <cmath>
 #include "Eigen/Core"
-#include "na/bessel.h"
+#include "na/special/bessel.h"
 
 namespace na
 {

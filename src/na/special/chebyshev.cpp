@@ -1,4 +1,4 @@
-#include "na/chebyshev.h"
+#include "na/special/chebyshev.h"
 #include <cassert>
 #include <cmath>
 #include "Eigen/Core"

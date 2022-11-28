@@ -4,7 +4,7 @@
 #include <complex>
 #include "Eigen/Core"
 #include "Eigen/Sparse"
-#include "na/chebyshev.h"
+#include "na/special/chebyshev.h"
 #include "na/linalg/hessenberg.h"
 
 namespace na

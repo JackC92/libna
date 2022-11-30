@@ -109,6 +109,33 @@ namespace na
 			normalize(vec);
 			return vec;
 		}
+		
+		template <typename Scalar>
+		inline void deduplicate(
+			Eigen::Vector<Scalar, Eigen::Dynamic>& x,
+			const bool sort = false)
+		{
+			if (x.size() == 0)
+			{
+				return;
+			}
+			if (sort)
+			{
+				std::sort<Scalar*>(x.data(), x.data() + x.size());
+			}
+			// This does not guarantee uniqueness of the entries unless the vector is sorted.
+			x.conservativeResize(std::unique<Scalar*>(x.data(), x.data() + x.size()) - x.data());
+		}
+
+		template <typename Derived, typename Scalar = typename Derived::Scalar>
+		inline Eigen::Vector<Scalar, Eigen::Dynamic> repelem(
+			const Eigen::MatrixBase<Derived>& x,
+			const Eigen::Index n)
+		{
+			static_assert((Derived::RowsAtCompileTime == 1) || (Derived::ColsAtCompileTime == 1), "Derived must be of the shape of a vector");
+			// The first reshaped() is equivalent to Matlab's x(:), which results in a column vector.
+			return x.reshaped().transpose().replicate(n, 1).reshaped();
+		}
 	}
 }
 

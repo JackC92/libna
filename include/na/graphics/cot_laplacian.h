@@ -1,5 +1,6 @@
 #ifndef NA_GRAPHICS_COT_LAPLACIAN_H
 #define NA_GRAPHICS_COT_LAPLACIAN_H
+#include <cmath>
 #include <vector>
 #include "Eigen/Core"
 #include "Eigen/Sparse"

@@ -1,5 +1,6 @@
 #ifndef NA_LINALG_VECTOR_H
 #define NA_LINALG_VECTOR_H
+#include <algorithm>
 #include <type_traits>
 #include "Eigen/Core"
 #include "na/type_traits/floating_point_scalar.h"

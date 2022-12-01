@@ -1,5 +1,6 @@
 #ifndef NA_LINALG_COLLEAGUE_MATRIX_H
 #define NA_LINALG_COLLEAGUE_MATRIX_H
+#include <complex>
 #include "Eigen/Core"
 #include "Eigen/Sparse"
 

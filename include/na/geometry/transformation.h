@@ -1,5 +1,6 @@
 #ifndef NA_GEOMETRY_TRANSFORMATION_H
 #define NA_GEOMETRY_TRANSFORMATION_H
+#include <type_traits>
 #include "Eigen/Core"
 #include "Eigen/Geometry"
 

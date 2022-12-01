@@ -31,8 +31,8 @@ namespace na
 			for (Eigen::Index i = 0; i < Trows; ++i)
 			{
 				Eigen::Vector<typename DerivedT::Scalar, 4> tet = T.row(i);
-				std::sort(order.data(), order.data() + 4, [&tet](StorageIndex k, StorageIndex l) { return tet(k) < tet(l); });
-				std::sort(argorder.data(), argorder.data() + 4, [&order](StorageIndex k, StorageIndex l) { return order(k) < order(l); });
+				std::sort<StorageIndex*>(order.data(), order.data() + 4, [&tet](StorageIndex k, StorageIndex l) { return tet(k) < tet(l); });
+				std::sort<StorageIndex*>(argorder.data(), argorder.data() + 4, [&order](StorageIndex k, StorageIndex l) { return order(k) < order(l); });
 				Eigen::Vector<Scalar, 3> a = V.row(tet(0));
 				Eigen::Vector<Scalar, 3> b = V.row(tet(1));
 				Eigen::Vector<Scalar, 3> c = V.row(tet(2));

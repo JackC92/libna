@@ -1,6 +1,7 @@
 #ifndef NA_GRAPHICS_MASSMATRIX_H
 #define NA_GRAPHICS_MASSMATIRX_H
 #include <cmath>
+#include <type_traits>
 #include "Eigen/Core"
 #include "Eigen/Sparse"
 

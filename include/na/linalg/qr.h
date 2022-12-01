@@ -1,5 +1,6 @@
 #ifndef NA_LINALG_QR_H
 #define NA_LINALG_QR_H
+#include <complex>
 #include "Eigen/Core"
 
 namespace na

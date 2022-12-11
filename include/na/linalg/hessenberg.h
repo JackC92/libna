@@ -1,14 +1,13 @@
 #ifndef NA_LINALG_HESSENBERG_H
 #define NA_LINALG_HESSENBERG_H
+#include <complex>
 #include "Eigen/Core"
 
 namespace na
 {
 	namespace linalg
 	{
-		namespace hessenberg
-		{
-			// Compute the eigenvalues of the lower Hessenberg matrix B of
+		// Compute the eigenvalues of the lower Hessenberg matrix B of
 			// the form
 			//              B = A + P \circ Q^*,                                   (1)
 			// where A is a Hermitian matrix, and P, Q are a pair of vectors.
@@ -20,14 +19,13 @@ namespace na
 			// Note also that, for matrices of this form, A is determined
 			// entirely by its diagonal and superdiagonal together with the
 			// vectors P and Q.
-			void herm_p_rank1(
-				Eigen::VectorXcd& diag,
-				Eigen::VectorXcd& supdiag,
-				Eigen::VectorXcd& p,
-				Eigen::VectorXcd& q,
-				const Eigen::Index n,
-				const double eps);
-		}
+		void herm_p_rank1(
+			Eigen::VectorXcd& diag,
+			Eigen::VectorXcd& supdiag,
+			Eigen::VectorXcd& p,
+			Eigen::VectorXcd& q,
+			const Eigen::Index n,
+			const double eps);
 	}
 }
 

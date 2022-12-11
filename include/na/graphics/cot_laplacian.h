@@ -9,12 +9,20 @@ namespace na
 {
 	namespace graphics
 	{
-		template <typename DerivedV, typename DerivedT, typename Scalar, int Options, typename StorageIndex>
-		void cot_laplacian_tet(
+		template <
+			typename DerivedV,
+			typename DerivedT,
+			typename Scalar,
+			int Options,
+			typename StorageIndex,
+			std::enable_if_t<DerivedT::ColsAtCompileTime == 4, bool> = true>
+		void cot_laplacian(
 			const Eigen::MatrixBase<DerivedV>& V,
 			const Eigen::MatrixBase<DerivedT>& T,
 			Eigen::SparseMatrix<Scalar, Options, StorageIndex>& L)
 		{
+			static_assert(DerivedV::ColsAtCompileTime == 3, "cot_laplacian: DerivedV must have compatible size");
+			static_assert(std::is_same_v<typename DerivedV::Scalar, Scalar>, "cot_laplacian: V and L must have the same numeric type");
 			const Eigen::Index Vrows = V.rows();
 			const Eigen::Index Trows = T.rows();
 
@@ -25,15 +33,15 @@ namespace na
 			Eigen::Matrix<Scalar, 4, 4> GTG;
 			for (Eigen::Index i = 0; i < Trows; ++i)
 			{
-				Eigen::Vector<typename DerivedT::Scalar, 4> tet = T.row(i);
-				Eigen::Vector<Scalar, 3> a = V.row(tet(0));
-				Eigen::Vector<Scalar, 3> b = V.row(tet(1));
-				Eigen::Vector<Scalar, 3> c = V.row(tet(2));
-				Eigen::Vector<Scalar, 3> d = V.row(tet(3));
-				Eigen::Vector<Scalar, 3> na = (d - b).cross(c - b).normalized();
-				Eigen::Vector<Scalar, 3> nb = (d - c).cross(a - c).normalized();
-				Eigen::Vector<Scalar, 3> nc = (d - a).cross(b - a).normalized();
-				Eigen::Vector<Scalar, 3> nd = (b - a).cross(c - a).normalized();
+				Eigen::Vector4<typename DerivedT::Scalar> tet = T.row(i);
+				Eigen::Vector3<Scalar> a = V.row(tet(0));
+				Eigen::Vector3<Scalar> b = V.row(tet(1));
+				Eigen::Vector3<Scalar> c = V.row(tet(2));
+				Eigen::Vector3<Scalar> d = V.row(tet(3));
+				Eigen::Vector3<Scalar> na = (d - b).cross(c - b).normalized();
+				Eigen::Vector3<Scalar> nb = (d - c).cross(a - c).normalized();
+				Eigen::Vector3<Scalar> nc = (d - a).cross(b - a).normalized();
+				Eigen::Vector3<Scalar> nd = (b - a).cross(c - a).normalized();
 
 				G.col(0) = na / na.dot(a - b);
 				G.col(1) = nb / nb.dot(b - c);

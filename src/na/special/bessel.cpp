@@ -33,7 +33,7 @@ namespace na
 				62.048469190227169883
 			};
 
-			assert((k >= 1) && "k must be a positive integer");
+			assert((k >= 1) && "besselj0_zero: k must be a positive integer");
 
 			if (k > 20)
 			{
@@ -76,7 +76,7 @@ namespace na
 				1.0260372926280762811e-2
 			};
 
-			assert((k >= 1) && "k must be a positive integer");
+			assert((k >= 1) && "besselj1_squared: k must be a positive integer");
 
 			if (k > 20)
 			{

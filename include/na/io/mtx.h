@@ -1,5 +1,6 @@
-#ifndef NA_UTILS_MATRIXIO_H
-#define NA_UTILS_MATRIXIO_H
+#ifndef NA_IO_MTX_H
+#define NA_IO_MTX_H
+#include <complex>
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -8,6 +9,7 @@
 #include "Eigen/Core"
 #include "Eigen/Sparse"
 #include "na/macros.h"
+#include "na/type_traits/is_array_or_matrix.h"
 #include "na/type_traits/is_complex.h"
 
 namespace na
@@ -17,19 +19,19 @@ namespace na
 		template <typename T, bool coordinate>
 		constexpr const char* mtx_data_format = nullptr;
 
-		EXPLICIT_SPEC constexpr const char* mtx_data_format<int, false> = "%d";
-		EXPLICIT_SPEC constexpr const char* mtx_data_format<float, false> = "%g";
-		EXPLICIT_SPEC constexpr const char* mtx_data_format<double, false> = "%lg";
-		EXPLICIT_SPEC constexpr const char* mtx_data_format<long double, false> = "%Lg";
-		EXPLICIT_SPEC constexpr const char* mtx_data_format<std::complex<float>, false> = "%g %g";
-		EXPLICIT_SPEC constexpr const char* mtx_data_format<std::complex<double>, false> = "%lg %lg";
-		EXPLICIT_SPEC constexpr const char* mtx_data_format<std::complex<long double>, false> = "%Lg %Lg";
-		EXPLICIT_SPEC constexpr const char* mtx_data_format<float, true> = "%lld %lld %g";
-		EXPLICIT_SPEC constexpr const char* mtx_data_format<double, true> = "%lld %lld %lg";
-		EXPLICIT_SPEC constexpr const char* mtx_data_format<long double, true> = "%lld %lld %Lg";
-		EXPLICIT_SPEC constexpr const char* mtx_data_format<std::complex<float>, true> = "%lld %lld %g %g";
-		EXPLICIT_SPEC constexpr const char* mtx_data_format<std::complex<double>, true> = "%lld %lld %lg %lg";
-		EXPLICIT_SPEC constexpr const char* mtx_data_format<std::complex<long double>, true> = "%lld %lld %Lg %Lg";
+		EXPSPEC constexpr const char* mtx_data_format<int, false> = "%d";
+		EXPSPEC constexpr const char* mtx_data_format<float, false> = "%g";
+		EXPSPEC constexpr const char* mtx_data_format<double, false> = "%lg";
+		EXPSPEC constexpr const char* mtx_data_format<long double, false> = "%Lg";
+		EXPSPEC constexpr const char* mtx_data_format<std::complex<float>, false> = "%g %g";
+		EXPSPEC constexpr const char* mtx_data_format<std::complex<double>, false> = "%lg %lg";
+		EXPSPEC constexpr const char* mtx_data_format<std::complex<long double>, false> = "%Lg %Lg";
+		EXPSPEC constexpr const char* mtx_data_format<float, true> = "%lld %lld %g";
+		EXPSPEC constexpr const char* mtx_data_format<double, true> = "%lld %lld %lg";
+		EXPSPEC constexpr const char* mtx_data_format<long double, true> = "%lld %lld %Lg";
+		EXPSPEC constexpr const char* mtx_data_format<std::complex<float>, true> = "%lld %lld %g %g";
+		EXPSPEC constexpr const char* mtx_data_format<std::complex<double>, true> = "%lld %lld %lg %lg";
+		EXPSPEC constexpr const char* mtx_data_format<std::complex<long double>, true> = "%lld %lld %Lg %Lg";
 	}
 
 	template <typename Derived>
@@ -55,8 +57,8 @@ namespace na
 		{
 			return false;
 		}
-		// This establishes the equivalence between "array" and Eigen::Matrix, or "coordinate" and Eigen::SparseMatrix.
-		if (!(((format.compare("array") == 0) && std::is_same_v<Derived, Eigen::Matrix<typename Derived::Scalar, Derived::RowsAtCompileTime, Derived::ColsAtCompileTime, Derived::Options, Derived::MaxRowsAtCompileTime, Derived::MaxColsAtCompileTime>>) || ((format.compare("coordinate") == 0) && std::is_same_v<Derived, Eigen::SparseMatrix<typename Derived::Scalar, Derived::Options, typename Derived::StorageIndex>>)))
+		// This establishes the equivalence between "array" and Eigen::PlainObjectBase<Derived>, or "coordinate" and Eigen::SparseMatrix.
+		if (!(((format.compare("array") == 0) && na::is_array_or_matrix_v<Derived>) || ((format.compare("coordinate") == 0) && std::is_same_v<Derived, Eigen::SparseMatrix<typename Derived::Scalar, Derived::Options, typename Derived::StorageIndex>>)))
 		{
 			return false;
 		}
@@ -78,7 +80,7 @@ namespace na
 			}
 		}
 		// The while loop above should have consumed the size line, if it exists. The following code does the actual check on the size line.
-		if constexpr (std::is_same_v<Derived, Eigen::Matrix<typename Derived::Scalar, Derived::RowsAtCompileTime, Derived::ColsAtCompileTime, Derived::Options, Derived::MaxRowsAtCompileTime, Derived::MaxColsAtCompileTime>>)
+		if constexpr (na::is_array_or_matrix_v<Derived>)
 		{
 			Eigen::Index rows, cols;
 			std::stringstream(line) >> rows >> cols;
@@ -176,29 +178,6 @@ namespace na
 		}
 		return true;
 	}
-
-	template <typename Scalar, int Options, typename StorageIndex>
-	void write_matlab(
-		const std::string& file_name,
-		Eigen::SparseMatrix<Scalar, Options, StorageIndex>& M)
-	{
-		std::ofstream writer(file_name);
-		for (Eigen::Index outer = 0; outer < M.outerSize(); ++outer)
-		{
-			for (Eigen::SparseMatrix<Scalar, Options, StorageIndex>::InnerIterator iter(M, outer); iter; ++iter)
-			{
-				writer << (iter.row() + 1) << " " << (iter.col() + 1) << " ";
-				if constexpr (na::is_complex_v<Scalar>)
-				{
-					writer << iter.value().real() << " " << iter.value().imag() << "\n";
-				}
-				else
-				{
-					writer << iter.value() << "\n";
-				}
-			}
-		}
-	}
 }
 
-#endif // !NA_UTILS_MATRIXIO_H
+#endif // !NA_IO_MTX_H

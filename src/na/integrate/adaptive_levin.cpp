@@ -5,8 +5,8 @@
 #include <queue>
 #include <utility>
 #include "Eigen/Core"
-#include "na/special/chebyshev.h"
 #include "na/linalg/qr.h"
+#include "na/special/chebyshev.h"
 
 namespace na
 {

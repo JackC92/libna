@@ -75,8 +75,8 @@ namespace na
 		template <typename Derived, typename Real = typename Derived::Scalar, int Options = 0>
 		inline Eigen::Quaternion<Real, Options> from_rotation_vector(const Eigen::MatrixBase<Derived>& angle_axis)
 		{
-			static_assert(std::is_floating_point_v<Real>, "from_rotation_vector only accepts floating-point types");
-			static_assert(Derived::IsVectorAtCompileTime && (Derived::SizeAtCompileTime == 3), "from_rotation_vector only accepts vectors of a specific size");
+			static_assert(std::is_floating_point_v<Real>, "from_rotation_vector: Real must be a floating-point type");
+			static_assert(Derived::IsVectorAtCompileTime && (Derived::SizeAtCompileTime == 3), "from_rotation_vector: Derived must have compatible size");
 			Real theta_squared = angle_axis.squaredNorm();
 			if (theta_squared > 1e-30)
 			{
@@ -91,9 +91,9 @@ namespace na
 		}
 
 		template <typename Real, int Options = 0>
-		inline Eigen::Quaternion<Real, Options> from_angle_axis(const Real angle, const Eigen::Vector<Real, 3>& axis)
+		inline Eigen::Quaternion<Real, Options> from_angle_axis(const Real angle, const Eigen::Vector3<Real>& axis)
 		{
-			static_assert(std::is_floating_point_v<Real>, "from_angle_axis only accepts floating-point types");
+			static_assert(std::is_floating_point_v<Real>, "from_angle_axis: Real must be a floating-point type");
 			Real half_angle = static_cast<Real>(0.5) * angle;
 			Real sin_half = std::sin(half_angle);
 			// The vector axis is expected to be a unit vector.
@@ -103,7 +103,7 @@ namespace na
 		template <typename Real, int Options = 0>
 		inline Eigen::Quaternion<Real, Options> from_angleX(const Real angleX)
 		{
-			static_assert(std::is_floating_point_v<Real>, "from_angleX only accepts floating-point types");
+			static_assert(std::is_floating_point_v<Real>, "from_angleX: Real must be a floating-point type");
 			Real half_angle = static_cast<Real>(0.5) * angleX;
 			return Eigen::Quaternion<Real, Options>(std::cos(half_angle), std::sin(half_angle), 0.0, 0.0);
 		}
@@ -111,7 +111,7 @@ namespace na
 		template <typename Real, int Options = 0>
 		inline Eigen::Quaternion<Real, Options> from_angleY(const Real angleY)
 		{
-			static_assert(std::is_floating_point_v<Real>, "from_angleY only accepts floating-point types");
+			static_assert(std::is_floating_point_v<Real>, "from_angleY: Real must be a floating-point type");
 			Real half_angle = static_cast<Real>(0.5) * angleY;
 			return Eigen::Quaternion<Real, Options>(std::cos(half_angle), std::sin(half_angle), 0.0, 0.0);
 		}
@@ -119,7 +119,7 @@ namespace na
 		template <typename Real, int Options = 0>
 		inline Eigen::Quaternion<Real, Options> from_angleZ(const Real angleZ)
 		{
-			static_assert(std::is_floating_point_v<Real>, "from_angleZ only accepts floating-point types");
+			static_assert(std::is_floating_point_v<Real>, "from_angleZ: Real must be a floating-point type");
 			Real half_angle = static_cast<Real>(0.5) * angleZ;
 			return Eigen::Quaternion<Real, Options>(std::cos(half_angle), std::sin(half_angle), 0.0, 0.0);
 		}
@@ -131,14 +131,14 @@ namespace na
 
 		// Compute the quaternion first derivative from the vector of angular speed given in absolute coordinates.
 		template <typename Real, int Options>
-		inline Eigen::Quaternion<Real, Options> Qdt_from_Wabs(const Eigen::Vector<Real, 3>& w, const Eigen::Quaternion<Real, Options>& q)
+		inline Eigen::Quaternion<Real, Options> Qdt_from_Wabs(const Eigen::Vector3<Real>& w, const Eigen::Quaternion<Real, Options>& q)
 		{
 			return Eigen::Quaternion<Real, Options>(0.0, w(0) * static_cast<Real>(0.5), w(1) * static_cast<Real>(0.5), w(2) * static_cast<Real>(0.5)) * q;
 		}
 
 		// Compute the quaternion first derivative from the vector of angular speed given in local coordinates.
 		template <typename Real, int Options>
-		inline Eigen::Quaternion<Real, Options> Qdt_from_Wloc(const Eigen::Vector<Real, 3>& w, const Eigen::Quaternion<Real, Options>& q)
+		inline Eigen::Quaternion<Real, Options> Qdt_from_Wloc(const Eigen::Vector3<Real>& w, const Eigen::Quaternion<Real, Options>& q)
 		{
 			return q * Eigen::Quaternion<Real, Options>(0.0, w(0) * static_cast<Real>(0.5), w(1) * static_cast<Real>(0.5), w(2) * static_cast<Real>(0.5));
 		}
@@ -146,7 +146,7 @@ namespace na
 		// Compute the quaternion second derivative from the vector of angular speed given in absolute coordinates.
 		template <typename Real, int Options>
 		inline Eigen::Quaternion<Real, Options> Qdtdt_from_Aabs(
-			const Eigen::Vector<Real, 3>& a,
+			const Eigen::Vector3<Real>& a,
 			const Eigen::Quaternion<Real, Options>& q,
 			const Eigen::Quaternion<Real, Options>& q_dt)
 		{
@@ -156,7 +156,7 @@ namespace na
 		// Compute the quaternion second derivative from the vector of angular speed given in local coordinates.
 		template <typename Real, int Options>
 		inline Eigen::Quaternion<Real, Options> Qdtdt_from_Aloc(
-			const Eigen::Vector<Real, 3>& a,
+			const Eigen::Vector3<Real>& a,
 			const Eigen::Quaternion<Real, Options>& q,
 			const Eigen::Quaternion<Real, Options>& q_dt)
 		{

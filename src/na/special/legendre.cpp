@@ -148,7 +148,7 @@ namespace na
 				Eigen::VectorXd& xslege,
 				Eigen::VectorXd& whtslege)
 			{
-				assert((n > 100) && "n must be greater than 100 to yield machine precision in the IEEE 754 double-precision format");
+				assert((n > 100) && "quadrature_bogaert: n must be greater than 100 to yield machine precision in the IEEE 754 double-precision format");
 
 				const Eigen::Index i = n / 2;
 				const Eigen::Index ifodd = n % 2;
@@ -202,7 +202,7 @@ namespace na
 	{
 		Eigen::VectorXd polynomial_coefficients(const Eigen::Index n)
 		{
-			assert((n >= 0) && "n must be a non-negative integer");
+			assert((n >= 0) && "polynomial_coefficients: n must be a non-negative integer");
 
 			Eigen::VectorXd coefs(n + 1);
 			if (n == 0)
@@ -245,7 +245,7 @@ namespace na
 			const Eigen::Index n,
 			const double x)
 		{
-			assert((n >= 0) && "n must be a non-negative integer");
+			assert((n >= 0) && "evaluate_polynomial: n must be a non-negative integer");
 
 			if (n == 0)
 			{
@@ -267,7 +267,7 @@ namespace na
 			const Eigen::Index n,
 			const double x)
 		{
-			assert((n >= 0) && "n must be a non-negative integer");
+			assert((n >= 0) && "evaluate_derivative: n must be a non-negative integer");
 
 			if (n == 0)
 			{
@@ -295,7 +295,7 @@ namespace na
 			double& pol,
 			double& der)
 		{
-			assert((n >= 0) && "n must be a non-negative integer");
+			assert((n >= 0) && "evaluate_polynomial: n must be a non-negative integer");
 
 			if (n == 0)
 			{
@@ -323,7 +323,7 @@ namespace na
 			Eigen::VectorXd& xslege,
 			Eigen::VectorXd& whtslege)
 		{
-			assert((n >= 1) && "n must be a positive integer");
+			assert((n >= 1) && "quadrature: n must be a positive integer");
 			xslege.resize(n);
 			whtslege.resize(n);
 			if (n > 100)
@@ -340,7 +340,7 @@ namespace na
 			const Eigen::Index n,
 			const Eigen::VectorXd& vals)
 		{
-			assert((n >= 1) && "n must be a positive integer");
+			assert((n >= 1) && "expansion_coefficients: n must be a positive integer");
 
 			Eigen::VectorXd xslege, whtslege;
 			quadrature(n, xslege, whtslege);
@@ -352,7 +352,7 @@ namespace na
 			const Eigen::VectorXd& coefs,
 			const double x)
 		{
-			assert((n >= 1) && "n must be a positive integer");
+			assert((n >= 1) && "evaluate_expansion: n must be a positive integer");
 
 			double val = coefs.coeffRef(0) * std::sqrt(0.5);
 			if (n > 1)
@@ -379,7 +379,7 @@ namespace na
 			double& val,
 			double& der)
 		{
-			assert((n >= 1) && "n must be a positive integer");
+			assert((n >= 1) && "evaluate_expansion: n must be a positive integer");
 
 			val = coefs.coeffRef(0) * std::sqrt(0.5);
 			der = 0.0;
@@ -410,7 +410,7 @@ namespace na
 			const Eigen::VectorXd& vals,
 			const double x)
 		{
-			assert((n >= 1) && "n must be a positive integer");
+			assert((n >= 1) && "interpolate: n must be a positive integer");
 
 			for (Eigen::Index i = 0; i < n; ++i)
 			{
@@ -437,11 +437,10 @@ namespace na
 			const Eigen::VectorXd& xsout,
 			const Eigen::VectorXd& whtsout)
 		{
-			assert((n >= 1) && "n must be a positive integer");
-			assert((m >= 1) && "m must be a positive integer");
+			assert((n >= 1) && "interpolation_matrix: n must be a positive integer");
+			assert((m >= 1) && "interpolation_matrix: m must be a positive integer");
 
-			Eigen::MatrixXd ainterp(m, n);
-			ainterp.setZero();
+			Eigen::MatrixXd ainterp = Eigen::MatrixXd::Zero(m, n);
 
 			Eigen::VectorXd lambda(n);
 			for (Eigen::Index j = 0; j < n; ++j)
@@ -483,10 +482,9 @@ namespace na
 			const Eigen::VectorXd& xslege,
 			const Eigen::VectorXd& whtslege)
 		{
-			assert((n >= 1) && "n must be a positive integer");
+			assert((n >= 1) && "coefficient_matrix: n must be a positive integer");
 
-			Eigen::MatrixXd umatr(n, n);
-			umatr.setZero();
+			Eigen::MatrixXd umatr = Eigen::MatrixXd::Zero(n, n);
 
 			for (Eigen::Index j = 0; j < n; ++j)
 			{
@@ -515,11 +513,10 @@ namespace na
 			const Eigen::Index n,
 			const Eigen::VectorXd& coefs)
 		{
-			assert((n >= 1) && "n must be a positive integer");
+			assert((n >= 1) && "to_monomial: n must be a positive integer");
 
-			Eigen::VectorXd coefsout(n), z(n);
-			coefsout.setZero();
-			z.setZero();
+			Eigen::VectorXd coefsout = Eigen::VectorXd::Zero(n);
+			Eigen::VectorXd z = Eigen::VectorXd::Zero(n);
 
 			double v = 0.0, w = 0.0;
 			coefsout(0) = coefs(n - 1);
@@ -543,11 +540,10 @@ namespace na
 			const Eigen::Index n,
 			const Eigen::VectorXd& coefs)
 		{
-			assert((n >= 1) && "n must be a positive integer");
+			assert((n >= 1) && "from_monomial: n must be a positive integer");
 
-			Eigen::VectorXd coefsout(n), q(n);
-			coefsout.setZero();
-			q.setZero();
+			Eigen::VectorXd coefsout = Eigen::VectorXd::Zero(n);
+			Eigen::VectorXd q = Eigen::VectorXd::Zero(n);
 
 			coefsout(0) = coefs(n - 2);
 			coefsout(1) = coefs(n - 1);

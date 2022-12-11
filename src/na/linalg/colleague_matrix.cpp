@@ -15,8 +15,8 @@ namespace na
 			const Eigen::Index n,
 			const Eigen::VectorXd& coefs)
 		{
-			assert((n >= 1) && "n must be a positive integer");
-			assert((coefs.size() == n + 1) && "n must be the order of the Chebyshev expansion");
+			assert((n >= 1) && "colleague_matrix: n must be a positive integer");
+			assert((coefs.size() == n + 1) && "colleague_matrix: n must be the order of the Chebyshev expansion");
 
 			Eigen::SparseMatrix<double> cmatr(n, n);
 			cmatr.reserve(Eigen::VectorXi::Constant(n, 3));
@@ -38,8 +38,8 @@ namespace na
 			const Eigen::Index n,
 			const Eigen::VectorXcd& coefs)
 		{
-			assert((n >= 1) && "n must be a positive integer");
-			assert((coefs.size() == n + 1) && "n must be the order of the Chebyshev expansion");
+			assert((n >= 1) && "colleague_matrix: n must be a positive integer");
+			assert((coefs.size() == n + 1) && "colleague_matrix: n must be the order of the Chebyshev expansion");
 
 			Eigen::SparseMatrix<Eigen::dcomplex> cmatr(n, n);
 			cmatr.reserve(Eigen::VectorXi::Constant(n, 3));
@@ -62,7 +62,7 @@ namespace na
 			const Eigen::VectorXcd& coefs,
 			const double eps)
 		{
-			assert((n >= 1) && "n must be a positive integer");
+			assert((n >= 1) && "colleague_roots: n must be a positive integer");
 
 			if (n == 1)
 			{
@@ -75,7 +75,7 @@ namespace na
 			Eigen::VectorXcd q = (-0.5 * coefs.segment(0, n) / coefs(n)).conjugate();
 			supdiag(0) = std::sqrt(0.5);
 			q(0) *= std::sqrt(2.0);
-			na::linalg::hessenberg::herm_p_rank1(roots, supdiag, p, q, n, eps);
+			na::linalg::herm_p_rank1(roots, supdiag, p, q, n, eps);
 			return roots;
 		}
 
@@ -86,7 +86,7 @@ namespace na
 			const double delta,
 			const double coff)
 		{
-			assert((n >= 1) && "n must be a positive integer");
+			assert((n >= 1) && "colleague_roots_m1p1: n must be a positive integer");
 
 			Eigen::VectorXd roots(n);
 			Eigen::VectorXcd croots = colleague_roots(n, coefs, eps);

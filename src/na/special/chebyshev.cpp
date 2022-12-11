@@ -12,7 +12,7 @@ namespace na
 			Eigen::VectorXd& xscheb,
 			Eigen::VectorXd& whtscheb)
 		{
-			assert((n >= 1) && "n must be a positive integer");
+			assert((n >= 1) && "quadrature: n must be a positive integer");
 
 			xscheb = ((Eigen::VectorXd::LinSpaced(n, 1.0, n).array() - 0.5) / n * M_PI).cos().reverse();
 			whtscheb.setConstant(n, 2.0);
@@ -40,7 +40,7 @@ namespace na
 			const Eigen::Index n,
 			const Eigen::VectorXd& vals)
 		{
-			assert((n >= 1) && "n must be a positive integer");
+			assert((n >= 1) && "expansion_coefficients: n must be a positive integer");
 
 			Eigen::VectorXd xscheb, whtscheb;
 			Eigen::MatrixXd umatr, vmatr;
@@ -54,7 +54,7 @@ namespace na
 			const Eigen::VectorXd& coefs,
 			const double x)
 		{
-			assert((n >= 0) && "n must be a non-negative integer");
+			assert((n >= 0) && "evaluate_expansion: n must be a non-negative integer");
 
 			if (n == 0)
 			{
@@ -81,7 +81,7 @@ namespace na
 			Eigen::MatrixXd& umatr,
 			Eigen::MatrixXd& vmatr)
 		{
-			assert((n >= 1) && "n must be a positive integer");
+			assert((n >= 1) && "coefficient_matrix: n must be a positive integer");
 
 			umatr.resize(n, n);
 			vmatr.resize(n, n);
@@ -116,7 +116,7 @@ namespace na
 			Eigen::VectorXd& xscheb,
 			Eigen::VectorXd& whtscheb)
 		{
-			assert((n >= 1) && "n must be a positive integer");
+			assert((n >= 1) && "quadrature: n must be a positive integer");
 
 			xscheb = (Eigen::VectorXd::LinSpaced(n, 0.0, n - 1.0).array() / (n - 1.0) * M_PI).cos().reverse();
 			whtscheb.setConstant(n, 1.0);
@@ -149,7 +149,7 @@ namespace na
 			Eigen::MatrixXd& umatr,
 			Eigen::MatrixXd& vmatr)
 		{
-			assert((n >= 1) && "n must be a positive integer");
+			assert((n >= 1) && "coefficient_matrix: n must be a positive integer");
 
 			umatr.resize(n, n);
 			vmatr.resize(n, n);
@@ -181,7 +181,7 @@ namespace na
 			const Eigen::Index n,
 			const Eigen::VectorXd& xscheb)
 		{
-			assert((n >= 1) && "n must be a positive integer");
+			assert((n >= 1) && "differentiation_matrix: n must be a positive integer");
 
 			Eigen::MatrixXd dmatr(n, n);
 			double ci = -1.0;

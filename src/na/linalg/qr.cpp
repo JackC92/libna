@@ -61,15 +61,15 @@ namespace na
 			// Apply the inverse of L to y, and multiply the result by Q on the left.
 			template <typename Scalar>
 			inline void qr_apply(
-				const Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>& Q,
-				const Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>& L,
-				const Eigen::Vector<Scalar, Eigen::Dynamic>& y,
-				Eigen::Vector<Scalar, Eigen::Dynamic>& x)
+				const Eigen::MatrixX<Scalar>& Q,
+				const Eigen::MatrixX<Scalar>& L,
+				const Eigen::VectorX<Scalar>& y,
+				Eigen::VectorX<Scalar>& x)
 			{
-				const int n = y.size();
+				const Eigen::Index n = y.size();
 				x = y;
 				x(0) /= L(0, 0);
-				for (int i = 1; i < n; ++i)
+				for (Eigen::Index i = 1; i < n; ++i)
 				{
 					x.segment(i, n - i) -= x(i - 1) * L.col(i - 1).segment(i, n - i);
 					x(i) /= L(i, i);
@@ -86,20 +86,20 @@ namespace na
 			Eigen::MatrixXd& Q,
 			Eigen::MatrixXd& L)
 		{
-			assert((A.rows() == A.cols()) && "A must be a square matrix");
+			assert((A.rows() == A.cols()) && "qr_factorize: A must be a square matrix");
 
-			const int n = A.rows();
+			const Eigen::Index n = A.rows();
 			const double size = A.squaredNorm();
 			L = A;
 			Q = Eigen::VectorXd::Ones(n).asDiagonal();
 
-			for (int i = 0; i < n - 1; ++i)
+			for (Eigen::Index i = 0; i < n - 1; ++i)
 			{
-				for (int j = n - 1; j > i; --j)
+				for (Eigen::Index j = n - 1; j > i; --j)
 				{
 					Eigen::Matrix2d u = na::internal::linalg::qr_rotation_matrix(L(i, i), L(i, j), size);
 					L(Eigen::seq(i, n - 1), { i, j }) = L(Eigen::seq(i, n - 1), { i, j }) * u;
-					Q(Eigen::placeholders::all, { i, j }) = Q(Eigen::placeholders::all, { i, j }) * u;
+					Q(Eigen::indexing::all, { i, j }) = Q(Eigen::indexing::all, { i, j }) * u;
 				}
 			}
 		}
@@ -118,20 +118,20 @@ namespace na
 			Eigen::MatrixXcd& Q,
 			Eigen::MatrixXcd& L)
 		{
-			assert((A.rows() == A.cols()) && "A must be a square matrix");
+			assert((A.rows() == A.cols()) && "qr_factorize: A must be a square matrix");
 
-			const int n = A.rows();
+			const Eigen::Index n = A.rows();
 			const double size = A.squaredNorm();
 			L = A;
 			Q = Eigen::VectorXcd::Ones(n).asDiagonal();
 
-			for (int i = 0; i < n - 1; ++i)
+			for (Eigen::Index i = 0; i < n - 1; ++i)
 			{
-				for (int j = n - 1; j > i; --j)
+				for (Eigen::Index j = n - 1; j > i; --j)
 				{
 					Eigen::Matrix2cd u = na::internal::linalg::cqr_rotation_matrix(L(i, i), L(i, j), size);
 					L(Eigen::seq(i, n - 1), { i, j }) = L(Eigen::seq(i, n - 1), { i, j }) * u;
-					Q(Eigen::placeholders::all, { i, j }) = Q(Eigen::placeholders::all, { i, j }) * u;
+					Q(Eigen::indexing::all, { i, j }) = Q(Eigen::indexing::all, { i, j }) * u;
 				}
 			}
 		}

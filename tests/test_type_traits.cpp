@@ -3,7 +3,7 @@
 #include "gtest/gtest.h"
 #include "na/type_traits/floating_point_scalar.h"
 #include "na/type_traits/is_complex.h"
-#include "na/type_traits/is_floating_point_or_complex.h"
+#include "na/type_traits/is_float_or_complex.h"
 
 TEST(type_traits, is_complex)
 {
@@ -18,13 +18,13 @@ TEST(type_traits, is_complex)
 
 TEST(type_traits, is_floating_point_or_complex)
 {
-	EXPECT_FALSE(na::is_floating_point_or_complex_v<int>);
-	EXPECT_TRUE(na::is_floating_point_or_complex_v<float>);
-	EXPECT_TRUE(na::is_floating_point_or_complex_v<double>);
-	EXPECT_TRUE(na::is_floating_point_or_complex_v<long double>);
-	EXPECT_TRUE(na::is_floating_point_or_complex_v<std::complex<float>>);
-	EXPECT_TRUE(na::is_floating_point_or_complex_v<std::complex<double>>);
-	EXPECT_TRUE(na::is_floating_point_or_complex_v<std::complex<long double>>);
+	EXPECT_FALSE(na::is_float_or_complex_v<int>);
+	EXPECT_TRUE(na::is_float_or_complex_v<float>);
+	EXPECT_TRUE(na::is_float_or_complex_v<double>);
+	EXPECT_TRUE(na::is_float_or_complex_v<long double>);
+	EXPECT_TRUE(na::is_float_or_complex_v<std::complex<float>>);
+	EXPECT_TRUE(na::is_float_or_complex_v<std::complex<double>>);
+	EXPECT_TRUE(na::is_float_or_complex_v<std::complex<long double>>);
 }
 
 TEST(type_traits, floating_point_scalar)

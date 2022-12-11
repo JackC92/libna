@@ -4,14 +4,14 @@
 #include <complex>
 #include <functional>
 #include "na/type_traits/floating_point_scalar.h"
-#include "na/type_traits/is_floating_point_or_complex.h"
+#include "na/type_traits/is_float_or_complex.h"
 
 namespace na
 {
 	namespace internal
 	{
 		template <typename Scalar>
-		Scalar adaptive_simpson_impl(
+		Scalar adaptive_simpson_estimate(
 			const std::function<Scalar(double)> f,
 			const double a,
 			const double b,
@@ -35,8 +35,8 @@ namespace na
 			}
 			else
 			{
-				return adaptive_simpson_impl(f, a, m, 0.5 * tol, left, fa, fm, flm, depth - 1)
-					+ adaptive_simpson_impl(f, m, b, 0.5 * tol, right, fm, fb, frm, depth - 1);
+				return adaptive_simpson_estimate(f, a, m, 0.5 * tol, left, fa, fm, flm, depth - 1)
+					+ adaptive_simpson_estimate(f, m, b, 0.5 * tol, right, fm, fb, frm, depth - 1);
 			}
 		}
 	}
@@ -49,7 +49,7 @@ namespace na
 		const double tol,
 		const int max_depth)
 	{
-		static_assert(na::is_floating_point_or_complex_v<Scalar>, "Scalar must be a floating-point type or std::complex");
+		static_assert(na::is_float_or_complex_v<Scalar>, "adaptive_simpson: Scalar must be a floating-point type or std::complex");
 		double h = b - a;
 		if (h == 0.0)
 		{
@@ -57,7 +57,7 @@ namespace na
 		}
 		Scalar fa = f(a), fb = f(b), fm = f(0.5 * (a + b));
 		Scalar whole = (h / 6.0) * (fa + 4.0 * fm + fb);
-		return na::internal::integrate::adaptive_simpson_impl(f, a, b, tol, whole, fa, fb, fm, max_depth);
+		return na::internal::adaptive_simpson_estimate(f, a, b, tol, whole, fa, fb, fm, max_depth);
 	}
 }
 

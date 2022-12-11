@@ -3,9 +3,16 @@ cmake_minimum_required(VERSION 3.24.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_NO_SYSTEM_FROM_IMPORTED 1) # include directories using -i instead of -isystem
 
-project("NumericalAlgorithms")
+project("NumericalAlgorithms" LANGUAGES CXX Fortran)
 
-option(ENABLE_CHOLMOD "Enable CHOLMOD linear system solver" ON)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+
+option(WITH_CHOLMOD "Build with CHOLMOD" ON)
+option(WITH_MATLAB "Build with MATLAB" ON)
+option(WITH_MKL "Build with Intel MKL" ON)
+option(WITH_OPENMP "Build with OpenMP" ON)
+option(WITH_TORCH "Build with PyTorch" ON)
+option(WITH_TENSORFLOW "Build with TensorFlow" ON)
 
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
@@ -15,92 +22,79 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-### Compiler options
-set(CMAKE_EXPORT_COMPILE_COMMANDS 1) # Emit a compile flags file to support completion engines, ignored by generators other than Makefile Generators and Ninja.
-
-if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    # Using Clang or GCC
-    message(STATUS "Using Clang/gcc compiler flags")
-    set(BASE_CXX_FLAGS "-std=c++17 -Wall -Wextra -g3")
-    set(DISABLED_WARNINGS " -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-deprecated-declarations -Wno-missing-braces")
-    set(TRACE_INCLUDES " -H -Wno-error=unused-command-line-argument")
-    
-    if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-        message(STATUS "Setting Clang specific options")
-        set(BASE_CXX_FLAGS "${BASE_CXX_FLAGS} -ferror-limit=5 -fcolor-diagnostics")
-        set(CMAKE_CXX_FLAGS_DEBUG "-fsanitize=address -fno-limit-debug-info")
-    elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-        message(STATUS "Setting gcc specific options")
-        set(BASE_CXX_FLAGS "${BASE_CXX_FLAGS} -fmax-errors=5")
-        set(DISABLED_WARNINGS "${DISABLED_WARNINGS} -Wno-maybe-uninitialized -Wno-format-zero-length -Wno-unused-but-set-parameter -Wno-unused-but-set-variable")
-    endif()
-    
-    set(CMAKE_CXX_FLAGS "${BASE_CXX_FLAGS} ${DISABLED_WARNINGS}")
-    #SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TRACE_INCLUDES}") # uncomment if you need to track down where something is getting included from
-    set(CMAKE_CXX_FLAGS_DEBUG          "${CMAKE_CXX_FLAGS_DEBUG} -g3")
-    set(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
-    set(CMAKE_CXX_FLAGS_RELEASE        "-march=native -O3 -DNDEBUG")
-    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
-    
-    add_definitions(-D_USE_MATH_DEFINES)
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    # Using Microsoft Visual C++
-    message(STATUS "Using Microsoft Visual C++ compiler flags")
-    set(BASE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
-    set(BASE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP") # Parallel build
-    SET(DISABLED_WARNINGS "${DISABLED_WARNINGS} /wd\"4267\"")  # ignore conversion to smaller type (fires more aggressively than the gcc version, which is annoying)
-    SET(DISABLED_WARNINGS "${DISABLED_WARNINGS} /wd\"4244\"")  # ignore conversion to smaller type (fires more aggressively than the gcc version, which is annoying)
-    SET(DISABLED_WARNINGS "${DISABLED_WARNINGS} /wd\"4305\"")  # ignore truncation on initialization
-    SET(CMAKE_CXX_FLAGS "${BASE_CXX_FLAGS} ${DISABLED_WARNINGS}")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MD")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
-    
-    add_definitions(-D_USE_MATH_DEFINES)
-else()
-    # Unrecognized compiler
-    message(FATAL_ERROR "Unrecognized compiler [${CMAKE_CXX_COMPILER_ID}]")
-endif()
-
 add_subdirectory("external/googletest")
 
-include_directories("include/")
-
-# Add project files
 file(GLOB_RECURSE HEADER_FILES FOLLOW_SYMLINKS include/*.h)
 file(GLOB_RECURSE SRC_FILES FOLLOW_SYMLINKS src/*.cpp)
 file(GLOB_RECURSE TEST_FILES tests/test_*.cpp)
 
-add_library(core ${SRC_FILES} ${HEADER_FILES})
+include(MSVCFilter)
+include(CompilerOptions)
+
+add_library(core ${HEADER_FILES} ${SRC_FILES})
+add_executable(libna "libna.cpp")
+add_executable(tests "tests.cpp" ${TEST_FILES})
+
+set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT libna)
 set_target_properties(core PROPERTIES LINKER_LANGUAGE CXX)
 
-add_executable(libna "libna.cpp")
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT libna)
-target_link_libraries(libna PRIVATE core)
+target_link_libraries(libna PUBLIC core)
+target_link_libraries(tests PUBLIC core gtest gtest_main)
 
-add_executable(tests "tests.cpp" ${TEST_FILES})
-target_link_libraries(tests PRIVATE core gtest gtest_main)
+target_include_directories(core PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_include_directories(tests PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/external/googletest/googletest/include")
-add_test(NAME core_tests COMMAND tests)
 
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    foreach(header IN LISTS HEADER_FILES)
-        get_filename_component(header_path "${header}" PATH)
-        file(RELATIVE_PATH header_path_rel "${CMAKE_CURRENT_SOURCE_DIR}/include/na/" "${header_path}")
-        string(REPLACE "/" "\\" header_path_rel_msvc "${header_path_rel}")
-        source_group("Header Files\\${header_path_rel_msvc}" FILES "${header}")
-    endforeach()
-    foreach(source IN LISTS SRC_FILES)
-        get_filename_component(source_path "${source}" PATH)
-        file(RELATIVE_PATH source_path_rel "${CMAKE_CURRENT_SOURCE_DIR}/src/na/" "${source_path}")
-        string(REPLACE "/" "\\" source_path_rel_msvc "${source_path_rel}")
-        source_group("Source Files\\${source_path_rel_msvc}" FILES "${source}")
-    endforeach()
-endif()
-
-find_package(Eigen3 3.4 REQUIRED NO_MODULE)
+find_package(Eigen3 3.4 REQUIRED CONFIG)
 target_link_libraries(core PUBLIC Eigen3::Eigen)
 
-if (ENABLE_CHOLMOD)
-    find_package(SuiteSparse CONFIG REQUIRED)
-    target_link_libraries(core PUBLIC SuiteSparse::cholmod)
+set(_linked_targets "")
+if (WITH_CHOLMOD)
+    find_package(SuiteSparse REQUIRED CONFIG)
+	target_link_libraries(core PUBLIC SuiteSparse::cholmod)
+	
+	list(APPEND _linked_targets "CHOLMOD")
 endif()
+
+if (WITH_MATLAB)
+	find_package(Matlab REQUIRED CONFIG)
+	target_link_libraries(core PUBLIC Matlab::matlab)
+	
+	list(APPEND _linked_targets "MATLAB")
+endif()
+
+if (WITH_MKL)
+    # Eigen requires the LP64 interface
+    set(MKL_INTERFACE_FULL "intel_lp64")
+	add_definitions(-DEIGEN_USE_MKL_ALL)
+	
+	find_package(MKL REQUIRED CONFIG)
+	target_compile_options(core PUBLIC $<TARGET_PROPERTY:MKL::MKL,INTERFACE_COMPILE_OPTIONS>)
+	target_include_directories(core PUBLIC $<TARGET_PROPERTY:MKL::MKL,INTERFACE_INCLUDE_DIRECTORIES>)
+	target_link_libraries(core PUBLIC $<LINK_ONLY:MKL::MKL>)
+	
+	list(APPEND _linked_targets "MKL")
+endif()
+
+if (WITH_OPENMP)
+    find_package(OpenMP REQUIRED)
+	target_link_libraries(core PUBLIC $<$<CONFIG:Release>:OpenMP::OpenMP_CXX>)
+endif()
+
+if (WITH_TORCH)
+	find_package(Torch REQUIRED CONFIG)
+	target_link_libraries(core PUBLIC torch)
+	include(TorchFix)
+	
+	list(APPEND _linked_targets "TORCH")
+endif()
+
+if (WITH_TENSORFLOW)
+	find_package(TensorFlow REQUIRED CONFIG)
+	target_link_libraries(core PUBLIC TensorFlow::tensorflow)
+	
+	list(APPEND _linked_targets "TENSORFLOW")
+endif()
+
+foreach(_linked_target IN LISTS _linked_targets)
+	add_definitions("-DNA_USE_${_linked_target}")
+endforeach()

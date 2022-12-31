@@ -15,29 +15,29 @@ EXPSPEC struct distribution_generator<Type, Distribution> \
 	static inline GeneratorPtr run = &v ## Symbol ## Rng ## Suffix; \
 };
 
-		enum Distribution
+		enum class Distribution
 		{
-			DIST_UNIFORM,
-			DIST_GAUSSIAN,
-			DIST_GAUSSIANMV,
-			DIST_EXPONENTIAL,
-			DIST_LAPLACE,
-			DIST_WEIBULL,
-			DIST_CAUCHY,
-			DIST_RAYLEIGH,
-			DIST_LOGNORMAL,
-			DIST_GUMBEL,
-			DIST_GAMMA,
-			DIST_BETA,
-			DIST_CHISQUARE
+			UNIFORM,
+			GAUSSIAN,
+			GAUSSIANMV,
+			EXPONENTIAL,
+			LAPLACE,
+			WEIBULL,
+			CAUCHY,
+			RAYLEIGH,
+			LOGNORMAL,
+			GUMBEL,
+			GAMMA,
+			BETA,
+			CHISQUARE
 		};
 
-		template <typename Scalar, int Distribution>
+		template <typename Scalar, Distribution dist>
 		struct distribution_generator {};
 
-		NA_MAKE_MKL_GENERATOR(int,    DIST_UNIFORM, i, Uniform, const int, const int);
-		NA_MAKE_MKL_GENERATOR(float,  DIST_UNIFORM, s, Uniform, const float, const float);
-		NA_MAKE_MKL_GENERATOR(double, DIST_UNIFORM, d, Uniform, const double, const double);
+		NA_MAKE_MKL_GENERATOR(int,    Distribution::UNIFORM, i, Uniform, const int, const int);
+		NA_MAKE_MKL_GENERATOR(float,  Distribution::UNIFORM, s, Uniform, const float, const float);
+		NA_MAKE_MKL_GENERATOR(double, Distribution::UNIFORM, d, Uniform, const double, const double);
 		
 #undef NA_MAKE_MKL_GENERATOR
 	}

@@ -1,6 +1,7 @@
 #ifndef NA_CORE_MATRIX_H
 #define NA_CORE_MATRIX_H
 #include <cassert>
+#include <complex>
 #include <type_traits>
 #include "Eigen/Core"
 #ifdef NA_USE_MKL
@@ -11,6 +12,8 @@
 
 namespace na
 {
+	Eigen::Matrix3d hat_matrix(const Eigen::Vector3d& vec);
+
 	template <typename Derived>
 	inline void repelem(
 		const Eigen::MatrixBase<Derived>& mat,
@@ -55,9 +58,10 @@ namespace na
 	/*
 	* The following subroutines rely on Intel MKL, and are only applicable to int, float, and double because they are the data types supported by MKL.
 	*/
+
 	template <
 		typename Derived,
-		std::enable_if_t<std::is_floating_point_v<typename Derived::Scalar>, bool> = true>
+		std::enable_if_t<std::disjunction_v<std::is_same<typename Derived::Scalar, float>, std::is_same<typename Derived::Scalar, double>>, bool> = true>
 	inline void set_random(
 		Eigen::PlainObjectBase<Derived>& mat,
 		VSLStreamStatePtr stream = nullptr,
@@ -72,7 +76,7 @@ namespace na
 			vslNewStream(&ptr, VSL_BRNG_MT19937, 0);
 		}
 		// Note that the MKL's vRngUniform functions exclude the right bound of the interval.
-		na::mkl::distribution_generator<typename Derived::Scalar, na::mkl::DIST_UNIFORM>::run(VSL_RNG_METHOD_UNIFORM_STD, ptr, mat.size(), mat.derived().data(), lower, upper);
+		na::mkl::distribution_generator<typename Derived::Scalar, na::mkl::Distribution::UNIFORM>::run(VSL_RNG_METHOD_UNIFORM_STD, ptr, mat.size(), mat.derived().data(), lower, upper);
 		if (!has_stream)
 		{
 			vslDeleteStream(&ptr);
@@ -81,7 +85,7 @@ namespace na
 
 	template <
 		typename Derived,
-		std::enable_if_t<na::is_complex_v<typename Derived::Scalar>, bool> = true>
+		std::enable_if_t<std::disjunction_v<std::is_same<typename Derived::Scalar, std::complex<float>>, std::is_same<typename Derived::Scalar, std::complex<double>>>, bool> = true>
 	inline void set_random(
 		Eigen::PlainObjectBase<Derived>& mat,
 		VSLStreamStatePtr stream = nullptr,
@@ -94,8 +98,8 @@ namespace na
 		{
 			vslNewStream(&ptr, VSL_BRNG_MT19937, 0);
 		}
-		na::mkl::distribution_generator<typename Derived::RealScalar, na::mkl::DIST_UNIFORM>::run(VSL_RNG_METHOD_UNIFORM_STD, ptr, mat.size(), (typename Derived::RealScalar*)mat.derived().data(), lower.real(), upper.real());
-		na::mkl::distribution_generator<typename Derived::RealScalar, na::mkl::DIST_UNIFORM>::run(VSL_RNG_METHOD_UNIFORM_STD, ptr, mat.size(), ((typename Derived::RealScalar*)mat.derived().data()) + mat.size(), lower.imag(), upper.imag());
+		na::mkl::distribution_generator<typename Derived::RealScalar, na::mkl::Distribution::UNIFORM>::run(VSL_RNG_METHOD_UNIFORM_STD, ptr, mat.size(), (typename Derived::RealScalar*)mat.derived().data(), lower.real(), upper.real());
+		na::mkl::distribution_generator<typename Derived::RealScalar, na::mkl::Distribution::UNIFORM>::run(VSL_RNG_METHOD_UNIFORM_STD, ptr, mat.size(), ((typename Derived::RealScalar*)mat.derived().data()) + mat.size(), lower.imag(), upper.imag());
 		Eigen::Map<Eigen::Matrix2X<typename Derived::RealScalar>>((typename Derived::RealScalar*)mat.derived().data(), 2, mat.size()) = Eigen::Map<Eigen::MatrixX2<typename Derived::RealScalar>>((typename Derived::RealScalar*)mat.derived().data(), mat.size(), 2).transpose().eval();
 		if (!has_stream)
 		{

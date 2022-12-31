@@ -10,7 +10,7 @@
 
 namespace na
 {
-	namespace internal
+	namespace detail
 	{
 		template <typename Scalar>
 		struct IntegralTriplet
@@ -78,15 +78,15 @@ namespace na
 		na::chebyshev_pract::quadrature(k, xscheb, whtscheb);
 		Eigen::MatrixXd D = na::chebyshev_pract::differentiation_matrix(k, xscheb);
 
-		std::queue<na::internal::IntegralTriplet<double>> q;
-		q.push({ a, b, na::internal::adaptive_levin_estimate(f, g, a, b, k, xscheb, D) });
+		std::queue<na::detail::IntegralTriplet<double>> q;
+		q.push({ a, b, na::detail::adaptive_levin_estimate(f, g, a, b, k, xscheb, D) });
 		double val = 0.0;
 		while (!q.empty())
 		{
 			double mid = 0.5 * (q.front().a + q.front().b);
 			double val0 = q.front().val;
-			double valL = na::internal::adaptive_levin_estimate(f, g, q.front().a, mid, k, xscheb, D);
-			double valR = na::internal::adaptive_levin_estimate(f, g, mid, q.front().b, k, xscheb, D);
+			double valL = na::detail::adaptive_levin_estimate(f, g, q.front().a, mid, k, xscheb, D);
+			double valR = na::detail::adaptive_levin_estimate(f, g, mid, q.front().b, k, xscheb, D);
 			if (std::abs(val0 - valL - valR) < tol)
 			{
 				val += val0;
@@ -113,15 +113,15 @@ namespace na
 		na::chebyshev_pract::quadrature(k, xscheb, whtscheb);
 		Eigen::MatrixXd D = na::chebyshev_pract::differentiation_matrix(k, xscheb);
 
-		std::queue<na::internal::IntegralTriplet<std::complex<double>>> q;
-		q.push({ a, b, na::internal::cadaptive_levin_estimate(f, g, a, b, k, xscheb, D) });
+		std::queue<na::detail::IntegralTriplet<std::complex<double>>> q;
+		q.push({ a, b, na::detail::cadaptive_levin_estimate(f, g, a, b, k, xscheb, D) });
 		std::complex<double> val(0.0, 0.0);
 		while (!q.empty())
 		{
 			double mid = 0.5 * (q.front().a + q.front().b);
 			std::complex<double> val0 = q.front().val;
-			std::complex<double> valL = na::internal::cadaptive_levin_estimate(f, g, q.front().a, mid, k, xscheb, D);
-			std::complex<double> valR = na::internal::cadaptive_levin_estimate(f, g, mid, q.front().b, k, xscheb, D);
+			std::complex<double> valL = na::detail::cadaptive_levin_estimate(f, g, q.front().a, mid, k, xscheb, D);
+			std::complex<double> valR = na::detail::cadaptive_levin_estimate(f, g, mid, q.front().b, k, xscheb, D);
 			if (std::abs(val0 - valL - valR) < tol)
 			{
 				val += val0;

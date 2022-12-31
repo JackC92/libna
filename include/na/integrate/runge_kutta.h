@@ -30,7 +30,7 @@ namespace na
 		static_assert((DerivedIn::IsVectorAtCompileTime) && (DerivedOut::IsVectorAtCompileTime), "dopri5: DerivedIn and DerivedOut must be vectors");
 		static_assert((DerivedIn::SizeAtCompileTime == DerivedOut::SizeAtCompileTime), "dopri5: DerivedIn and DerivedOut must have the same size");
 		static_assert(std::is_same_v<typename DerivedIn::Scalar, typename DerivedOut::Scalar>, "dopri5: DerivedIn and DerivedOut must have the same scalar type");
-		typedef Eigen::Vector<typename DerivedIn::Scalar, DerivedIn::SizeAtCompileTime> Vector;
+		typedef Eigen::Matrix<typename DerivedOut::Scalar, DerivedOut::RowsAtCompileTime, DerivedOut::ColsAtCompileTime> VectorType;
 
 		constexpr double c2 = 0.2;
 		constexpr double c3 = 0.3;
@@ -91,10 +91,10 @@ namespace na
 		double t = t0;
 		// Compute a first guess for explicit Euler as
 		//     h = 0.01 * norm(y0) / norm(f(t0, y0))
-		Vector f0 = f(t0, y0);
-		Vector sk = tolabs + tolrel * y0.array().abs();
+		VectorType f0 = f(t0, y0);
+		VectorType sk = tolabs + tolrel * y0.array().abs();
 		double dnf = f0.cwiseQuotient(sk).squaredNorm();
-		double dny = y0.cwiseQuotient(sk).squaredNorm();
+		double dny = y.cwiseQuotient(sk).squaredNorm();
 		if ((dnf < 1e-10) || (dny < 1e-10))
 		{
 			h = 1e-6;
@@ -105,7 +105,7 @@ namespace na
 		}
 		// TODO: allow user-specified maximal step size
 		h = std::min<double>(h, t1 - t0);
-		Vector f1 = f(t0 + h, y0 + h * f0);
+		VectorType f1 = f(t0 + h, y + h * f0);
 		double der2 = (f1 - f0).cwiseQuotient(sk).norm() / h;
 		// Step size is computed such that
 		//     h**5 * max(norm(f(t0, y0)), norm(der2)) = 0.01
@@ -140,17 +140,17 @@ namespace na
 			}
 			step += 1;
 
-			Vector k1 = f(t, y);
-			Vector k2 = f(t + c2 * h, y + (c2 * h) * (a21 * k1));
-			Vector k3 = f(t + c3 * h, y + (c3 * h) * (a31 * k1 + a32 * k2));
-			Vector k4 = f(t + c4 * h, y + (c4 * h) * (a41 * k1 + a42 * k2 + a43 * k3));
-			Vector k5 = f(t + c5 * h, y + (c5 * h) * (a51 * k1 + a52 * k2 + a53 * k3 + a54 * k4));
-			Vector y6 = y + h * (a61 * k1 + a62 * k2 + a63 * k3 + a64 * k4 + a65 * k5);
-			Vector k6 = f(t + h, y6);
-			Vector y7 = y + h * (a71 * k1 + a73 * k3 + a74 * k4 + a75 * k5 + a76 * k6);
-			Vector k7 = f(t + h, y7);
+			VectorType k1 = f(t, y);
+			VectorType k2 = f(t + c2 * h, y + (c2 * h) * (a21 * k1));
+			VectorType k3 = f(t + c3 * h, y + (c3 * h) * (a31 * k1 + a32 * k2));
+			VectorType k4 = f(t + c4 * h, y + (c4 * h) * (a41 * k1 + a42 * k2 + a43 * k3));
+			VectorType k5 = f(t + c5 * h, y + (c5 * h) * (a51 * k1 + a52 * k2 + a53 * k3 + a54 * k4));
+			VectorType y6 = y + h * (a61 * k1 + a62 * k2 + a63 * k3 + a64 * k4 + a65 * k5);
+			VectorType k6 = f(t + h, y6);
+			VectorType y7 = y + h * (a71 * k1 + a73 * k3 + a74 * k4 + a75 * k5 + a76 * k6);
+			VectorType k7 = f(t + h, y7);
 
-			Vector sk = tolabs + tolrel * y.array().abs().max(y7.array().abs());
+			VectorType sk = tolabs + tolrel * y.array().abs().max(y7.array().abs());
 			double err = (h * (e1 * k1 + e3 * k3 + e4 * k4 + e5 * k5 + e6 * k6 + e7 * k7)).cwiseQuotient(sk).norm() * std::sqrt(1.0 / DerivedIn::SizeAtCompileTime);
 			double hnew = h / std::max<double>(facc2, std::min<double>(facc1, std::pow(err, expo1) / std::pow(facold, beta) / safe));
 

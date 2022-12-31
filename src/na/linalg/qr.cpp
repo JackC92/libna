@@ -6,7 +6,7 @@
 
 namespace na
 {
-	namespace internal
+	namespace detail
 	{
 		namespace linalg
 		{
@@ -97,7 +97,7 @@ namespace na
 			{
 				for (Eigen::Index j = n - 1; j > i; --j)
 				{
-					Eigen::Matrix2d u = na::internal::linalg::qr_rotation_matrix(L(i, i), L(i, j), size);
+					Eigen::Matrix2d u = na::detail::linalg::qr_rotation_matrix(L(i, i), L(i, j), size);
 					L(Eigen::seq(i, n - 1), { i, j }) = L(Eigen::seq(i, n - 1), { i, j }) * u;
 					Q(Eigen::indexing::all, { i, j }) = Q(Eigen::indexing::all, { i, j }) * u;
 				}
@@ -110,7 +110,7 @@ namespace na
 			const Eigen::VectorXd& y,
 			Eigen::VectorXd& x)
 		{
-			na::internal::linalg::qr_apply(Q, L, y, x);
+			na::detail::linalg::qr_apply(Q, L, y, x);
 		}
 
 		void cqr_factorize(
@@ -129,7 +129,7 @@ namespace na
 			{
 				for (Eigen::Index j = n - 1; j > i; --j)
 				{
-					Eigen::Matrix2cd u = na::internal::linalg::cqr_rotation_matrix(L(i, i), L(i, j), size);
+					Eigen::Matrix2cd u = na::detail::linalg::cqr_rotation_matrix(L(i, i), L(i, j), size);
 					L(Eigen::seq(i, n - 1), { i, j }) = L(Eigen::seq(i, n - 1), { i, j }) * u;
 					Q(Eigen::indexing::all, { i, j }) = Q(Eigen::indexing::all, { i, j }) * u;
 				}
@@ -142,7 +142,7 @@ namespace na
 			const Eigen::VectorXcd& y,
 			Eigen::VectorXcd& x)
 		{
-			na::internal::linalg::qr_apply(Q, L, y, x);
+			na::detail::linalg::qr_apply(Q, L, y, x);
 		}
 	}
 }

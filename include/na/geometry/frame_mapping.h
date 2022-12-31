@@ -6,8 +6,8 @@ namespace na
 {
 	void make_basis(
 		const Eigen::Vector3d& D3,
-		Eigen::Ref<Eigen::Vector3d> D1,
-		Eigen::Ref<Eigen::Vector3d> D2);
+		Eigen::Ref<Eigen::Vector3d, Eigen::Unaligned, Eigen::InnerStride<>> D1,
+		Eigen::Ref<Eigen::Vector3d, Eigen::Unaligned, Eigen::InnerStride<>> D2);
 
 	// This function is based on the paper
 	//   C. Meier, A. Popp, and W. A. Wall, "An objective 3D large deformation finite element formulation for geometrically exact curved Kirchhoff rods",

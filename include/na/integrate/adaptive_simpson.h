@@ -8,7 +8,7 @@
 
 namespace na
 {
-	namespace internal
+	namespace detail
 	{
 		template <typename Scalar>
 		Scalar adaptive_simpson_estimate(
@@ -57,7 +57,7 @@ namespace na
 		}
 		Scalar fa = f(a), fb = f(b), fm = f(0.5 * (a + b));
 		Scalar whole = (h / 6.0) * (fa + 4.0 * fm + fb);
-		return na::internal::adaptive_simpson_estimate(f, a, b, tol, whole, fa, fb, fm, max_depth);
+		return na::detail::adaptive_simpson_estimate(f, a, b, tol, whole, fa, fb, fm, max_depth);
 	}
 }
 

@@ -4,12 +4,12 @@
 
 namespace na
 {
-	namespace internal
+	namespace detail
 	{
 		namespace linalg
 		{
 			inline void herm_p_rank1_two_elems_rotate(
-				const Eigen::Ref<Eigen::Matrix2cd>& u,
+				Eigen::Ref<const Eigen::Matrix2cd> u,
 				Eigen::dcomplex& x,
 				Eigen::dcomplex& y)
 			{
@@ -19,7 +19,7 @@ namespace na
 			}
 
 			inline void herm_p_rank1_two_elems_rotate01(
-				const Eigen::Ref<Eigen::Matrix2cd>& u,
+				Eigen::Ref<const Eigen::Matrix2cd> u,
 				Eigen::dcomplex& x,
 				Eigen::dcomplex& y)
 			{
@@ -27,7 +27,7 @@ namespace na
 			}
 
 			inline void herm_p_rank1_two_elems_rotate10(
-				const Eigen::Ref<Eigen::Matrix2cd>& u,
+				Eigen::Ref<const Eigen::Matrix2cd> u,
 				Eigen::dcomplex& x,
 				Eigen::dcomplex& y)
 			{
@@ -161,13 +161,13 @@ namespace na
 			const Eigen::Index n,
 			const double eps)
 		{
-			na::internal::linalg::herm_p_rank1_iter(n, p, q, diag, supdiag);
-			na::internal::linalg::herm_p_rank1_iter(n, p, q, diag, supdiag);
-			na::internal::linalg::herm_p_rank1_iter(n, p, q, diag, supdiag);
+			na::detail::linalg::herm_p_rank1_iter(n, p, q, diag, supdiag);
+			na::detail::linalg::herm_p_rank1_iter(n, p, q, diag, supdiag);
+			na::detail::linalg::herm_p_rank1_iter(n, p, q, diag, supdiag);
 			for (Eigen::Index i = 0; i < n - 1; ++i)
 			{
 				const Eigen::Index nn = n - i;
-				na::internal::linalg::herm_p_rank1_one_dimen(diag.segment(i, nn), supdiag.segment(i, nn - 1), p.segment(i, nn), q.segment(i, nn), nn, eps);
+				na::detail::linalg::herm_p_rank1_one_dimen(diag.segment(i, nn), supdiag.segment(i, nn - 1), p.segment(i, nn), q.segment(i, nn), nn, eps);
 				diag(i) += p(i) * std::conj(q(i));
 			}
 			diag(n - 1) += p(n - 1) * std::conj(q(n - 1));

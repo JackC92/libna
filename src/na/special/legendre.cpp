@@ -6,7 +6,7 @@
 
 namespace na
 {
-	namespace internal
+	namespace detail
 	{
 		namespace legendre
 		{
@@ -328,11 +328,11 @@ namespace na
 			whtslege.resize(n);
 			if (n > 100)
 			{
-				na::internal::legendre::quadrature_bogaert(n, xslege, whtslege);
+				na::detail::legendre::quadrature_bogaert(n, xslege, whtslege);
 			}
 			else
 			{
-				na::internal::legendre::quadrature_glaser(n, xslege, whtslege);
+				na::detail::legendre::quadrature_glaser(n, xslege, whtslege);
 			}
 		}
 

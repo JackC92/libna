@@ -6,8 +6,8 @@ namespace na
 {
 	void make_basis(
 		const Eigen::Vector3d& D3,
-		Eigen::Ref<Eigen::Vector3d> D1,
-		Eigen::Ref<Eigen::Vector3d> D2)
+		Eigen::Ref<Eigen::Vector3d, Eigen::Unaligned, Eigen::InnerStride<>> D1,
+		Eigen::Ref<Eigen::Vector3d, Eigen::Unaligned, Eigen::InnerStride<>> D2)
 	{
 		if (D3(1) * D3(1) + D3(2) * D3(2) > 1e-12)
 		{

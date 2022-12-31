@@ -14,7 +14,7 @@
 
 namespace na
 {
-	namespace internal
+	namespace detail
 	{
 		template <typename T, bool coordinate>
 		constexpr const char* mtx_data_format = nullptr;
@@ -112,7 +112,7 @@ namespace na
 			{
 				if constexpr (na::is_complex_v<typename Derived::Scalar>)
 				{
-					if (std::sscanf(line.c_str(), na::internal::mtx_data_format<typename Derived::Scalar, false>, ptr, ptr + 1) != 2)
+					if (std::sscanf(line.c_str(), na::detail::mtx_data_format<typename Derived::Scalar, false>, ptr, ptr + 1) != 2)
 					{
 						return false;
 					}
@@ -120,7 +120,7 @@ namespace na
 				}
 				else
 				{
-					if (std::sscanf(line.c_str(), na::internal::mtx_data_format<typename Derived::Scalar, false>, ptr) != 1)
+					if (std::sscanf(line.c_str(), na::detail::mtx_data_format<typename Derived::Scalar, false>, ptr) != 1)
 					{
 						return false;
 					}
@@ -155,7 +155,7 @@ namespace na
 				typename Derived::RealScalar real, imag;
 				if constexpr (na::is_complex_v<typename Derived::Scalar>)
 				{
-					if (std::sscanf(line.c_str(), na::internal::mtx_data_format<typename Derived::Scalar, true>, &row, &col, &real, &imag) != 4)
+					if (std::sscanf(line.c_str(), na::detail::mtx_data_format<typename Derived::Scalar, true>, &row, &col, &real, &imag) != 4)
 					{
 						return false;
 					}
@@ -163,7 +163,7 @@ namespace na
 				}
 				else
 				{
-					if (std::sscanf(line.c_str(), na::internal::mtx_data_format<typename Derived::Scalar, true>, &row, &col, &real) != 3)
+					if (std::sscanf(line.c_str(), na::detail::mtx_data_format<typename Derived::Scalar, true>, &row, &col, &real) != 3)
 					{
 						return false;
 					}

@@ -6,10 +6,7 @@
 namespace na
 {
 	template <typename T>
-	constexpr bool is_array_or_matrix_v = false;
-
-	template <typename T>
-	constexpr bool is_array_or_matrix_v<Eigen::PlainObjectBase<T>> = true;
+	constexpr bool is_array_or_matrix_v = std::is_base_of_v<Eigen::PlainObjectBase<T>, T>;
 
 	template <typename T>
 	struct is_array_or_matrix : std::bool_constant<is_array_or_matrix_v<T>> {};

@@ -10,7 +10,7 @@ namespace na
 {
 	namespace bspline
 	{
-		Eigen::Vector3d evaluate(
+		Eigen::VectorXd evaluate(
 			Eigen::Ref<const Eigen::MatrixXd> coefs,
 			Eigen::Ref<const Eigen::VectorXd> knots,
 			const Eigen::Index deg,
@@ -114,6 +114,8 @@ namespace na
 			const Eigen::Index deg,
 			const double u)
 		{
+			assert((coefs.cols() == 3) && "curvature_binormal: coefs must be a matrix of size (n, 3)");
+			
 			Eigen::Vector3d v1 = evaluate(coefs, knots, deg, 1, u);
 			Eigen::Vector3d v2 = evaluate(coefs, knots, deg, 2, u);
 			return v1.cross(v2) * std::pow(v1.squaredNorm(), -1.5);
@@ -122,10 +124,14 @@ namespace na
 		Eigen::Vector3d scaled_curvature_binormal(
 			Eigen::Ref<const Eigen::MatrixXd> coefs,
 			Eigen::Ref<const Eigen::VectorXd> knots,
-			const Eigen::Index degree,
+			const Eigen::Index deg,
 			const double u)
 		{
-			return evaluate(coefs, knots, degree, 1, u).normalized().cross(evaluate(coefs, knots, degree, 2, u));
+			assert((coefs.cols() == 3) && "scaled_curvature_binormal: coefs must be a matrix of size (n, 3)");
+
+			Eigen::Vector3d v1 = evaluate(coefs, knots, deg, 1, u).normalized();
+			Eigen::Vector3d v2 = evaluate(coefs, knots, deg, 2, u);
+			return v1.cross(v2);
 		}
 	}
 }

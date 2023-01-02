@@ -11,7 +11,7 @@ namespace na
 		* For example, Eigen::Transpose<Eigen::MatrixXd> will result in data copying into a temporary object because of the different storage order.
 		*/
 
-		Eigen::Vector3d evaluate(
+		Eigen::VectorXd evaluate(
 			Eigen::Ref<const Eigen::MatrixXd> coefs,
 			Eigen::Ref<const Eigen::VectorXd> knots,
 			const Eigen::Index degree,

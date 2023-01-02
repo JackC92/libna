@@ -1,5 +1,6 @@
 #ifndef NA_TYPE_TRAITS_FUNCTION_TRAITS_H
 #define NA_TYPE_TRAITS_FUNCTION_TRAITS_H
+#include <functional>
 #include <tuple>
 
 namespace na

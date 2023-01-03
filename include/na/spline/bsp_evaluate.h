@@ -12,27 +12,27 @@ namespace na
 		*/
 
 		Eigen::VectorXd evaluate(
-			Eigen::Ref<const Eigen::MatrixXd> coefs,
-			Eigen::Ref<const Eigen::VectorXd> knots,
+			const Eigen::Ref<const Eigen::MatrixXd>& coefs,
+			const Eigen::Ref<const Eigen::VectorXd>& knots,
 			const Eigen::Index degree,
 			const Eigen::Index m,
 			const double u);
 
 		Eigen::VectorXd evaluate_basis(
-			Eigen::Ref<const Eigen::VectorXd> knots,
+			const Eigen::Ref<const Eigen::VectorXd>& knots,
 			const Eigen::Index degree,
 			const Eigen::Index m,
 			const double u);
 
 		Eigen::MatrixXd evaluate_basis(
-			Eigen::Ref<const Eigen::VectorXd> knots,
+			const Eigen::Ref<const Eigen::VectorXd>& knots,
 			const Eigen::Index degree,
 			const Eigen::Index m,
-			Eigen::Ref<const Eigen::VectorXd> u);
+			const Eigen::Ref<const Eigen::VectorXd>& u);
 
 		double length(
-			Eigen::Ref<const Eigen::MatrixXd> coefs,
-			Eigen::Ref<const Eigen::VectorXd> knots,
+			const Eigen::Ref<const Eigen::MatrixXd>& coefs,
+			const Eigen::Ref<const Eigen::VectorXd>& knots,
 			const Eigen::Index degree,
 			const double u0,
 			const double u1,
@@ -40,16 +40,16 @@ namespace na
 
 		// Compute the curvature binormal of the B-spline curve described by the input parameters.
 		Eigen::Vector3d curvature_binormal(
-			Eigen::Ref<const Eigen::MatrixXd> coefs,
-			Eigen::Ref<const Eigen::VectorXd> knots,
+			const Eigen::Ref<const Eigen::MatrixXd>& coefs,
+			const Eigen::Ref<const Eigen::VectorXd>& knots,
 			const Eigen::Index degree,
 			const double u);
 
 		// Return the curvature binormal scaled by the norm of the tangent.
 		// This is usually used for solving the parallel transport ODE.
 		Eigen::Vector3d scaled_curvature_binormal(
-			Eigen::Ref<const Eigen::MatrixXd> coefs,
-			Eigen::Ref<const Eigen::VectorXd> knots,
+			const Eigen::Ref<const Eigen::MatrixXd>& coefs,
+			const Eigen::Ref<const Eigen::VectorXd>& knots,
 			const Eigen::Index degree,
 			const double u);
 	}

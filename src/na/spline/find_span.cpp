@@ -7,7 +7,7 @@ namespace na
 	namespace spline
 	{
 		Eigen::Index find_span(
-			Eigen::Ref<const Eigen::VectorXd> knots,
+			const Eigen::Ref<const Eigen::VectorXd>& knots,
 			const Eigen::Index degree,
 			const double u)
 		{
@@ -37,9 +37,9 @@ namespace na
 		}
 
 		std::vector<Eigen::Index> find_span(
-			Eigen::Ref<const Eigen::VectorXd> knots,
+			const Eigen::Ref<const Eigen::VectorXd>& knots,
 			const Eigen::Index degree,
-			Eigen::Ref<const Eigen::VectorXd> u)
+			const Eigen::Ref<const Eigen::VectorXd>& u)
 		{
 			std::vector<Eigen::Index> indices;
 			indices.reserve(u.size());

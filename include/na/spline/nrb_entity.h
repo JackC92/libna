@@ -14,13 +14,13 @@ namespace na
 				const std::vector<Eigen::Index>& degree,
 				const std::vector<Eigen::Index>& number,
 				const std::vector<Eigen::VectorXd>& knots,
-				Eigen::Ref<const Eigen::MatrixXd> coefs,
+				const Eigen::Ref<const Eigen::MatrixXd>& coefs,
 				const bool normalize = false);
 			NURBSEntity(
 				const Eigen::Index degree,
 				const Eigen::Index number,
-				Eigen::Ref<const Eigen::VectorXd> knots,
-				Eigen::Ref<const Eigen::MatrixXd> coefs,
+				const Eigen::Ref<const Eigen::VectorXd>& knots,
+				const Eigen::Ref<const Eigen::MatrixXd>& coefs,
 				const bool normalize = false);
 			~NURBSEntity();
 

@@ -9,7 +9,7 @@ namespace na
 		namespace linalg
 		{
 			inline void herm_p_rank1_two_elems_rotate(
-				Eigen::Ref<const Eigen::Matrix2cd> u,
+				const Eigen::Ref<const Eigen::Matrix2cd>& u,
 				Eigen::dcomplex& x,
 				Eigen::dcomplex& y)
 			{
@@ -19,7 +19,7 @@ namespace na
 			}
 
 			inline void herm_p_rank1_two_elems_rotate01(
-				Eigen::Ref<const Eigen::Matrix2cd> u,
+				const Eigen::Ref<const Eigen::Matrix2cd>& u,
 				Eigen::dcomplex& x,
 				Eigen::dcomplex& y)
 			{
@@ -27,7 +27,7 @@ namespace na
 			}
 
 			inline void herm_p_rank1_two_elems_rotate10(
-				Eigen::Ref<const Eigen::Matrix2cd> u,
+				const Eigen::Ref<const Eigen::Matrix2cd>& u,
 				Eigen::dcomplex& x,
 				Eigen::dcomplex& y)
 			{

@@ -14,7 +14,7 @@ namespace na
 			const std::vector<Eigen::Index>& degree,
 			const std::vector<Eigen::Index>& number,
 			const std::vector<Eigen::VectorXd>& knots,
-			Eigen::Ref<const Eigen::MatrixXd> coefs,
+			const Eigen::Ref<const Eigen::MatrixXd>& coefs,
 			const bool normalize)
 		{
 			assert(((number.size() == degree.size()) && (number.size() == knots.size())) && "NURBSEntity: degree, number and knots must have the same size");
@@ -52,8 +52,8 @@ namespace na
 		NURBSEntity::NURBSEntity(
 			const Eigen::Index degree,
 			const Eigen::Index number,
-			Eigen::Ref<const Eigen::VectorXd> knots,
-			Eigen::Ref<const Eigen::MatrixXd> coefs,
+			const Eigen::Ref<const Eigen::VectorXd>& knots,
+			const Eigen::Ref<const Eigen::MatrixXd>& coefs,
 			const bool normalize)
 			: NURBSEntity(std::vector<Eigen::Index>(1, degree), std::vector<Eigen::Index>(1, number), std::vector<Eigen::VectorXd>(1, knots), coefs)
 		{

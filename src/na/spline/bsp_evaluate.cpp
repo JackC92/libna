@@ -11,8 +11,8 @@ namespace na
 	namespace bspline
 	{
 		Eigen::VectorXd evaluate(
-			Eigen::Ref<const Eigen::MatrixXd> coefs,
-			Eigen::Ref<const Eigen::VectorXd> knots,
+			const Eigen::Ref<const Eigen::MatrixXd>& coefs,
+			const Eigen::Ref<const Eigen::VectorXd>& knots,
 			const Eigen::Index deg,
 			const Eigen::Index m,
 			const double u)
@@ -22,7 +22,7 @@ namespace na
 		}
 
 		Eigen::VectorXd evaluate_basis(
-			Eigen::Ref<const Eigen::VectorXd> knots,
+			const Eigen::Ref<const Eigen::VectorXd>& knots,
 			const Eigen::Index deg,
 			const Eigen::Index m,
 			const double u)
@@ -76,10 +76,10 @@ namespace na
 		}
 
 		Eigen::MatrixXd evaluate_basis(
-			Eigen::Ref<const Eigen::VectorXd> knots,
+			const Eigen::Ref<const Eigen::VectorXd>& knots,
 			const Eigen::Index deg,
 			const Eigen::Index m,
-			Eigen::Ref<const Eigen::VectorXd> u)
+			const Eigen::Ref<const Eigen::VectorXd>& u)
 		{
 			// n is the number of control points needed to be compatible with T.
 			const Eigen::Index n = knots.size() - deg - 1;
@@ -95,8 +95,8 @@ namespace na
 		}
 
 		double length(
-			Eigen::Ref<const Eigen::MatrixXd> coefs, 
-			Eigen::Ref<const Eigen::VectorXd> knots,
+			const Eigen::Ref<const Eigen::MatrixXd>& coefs, 
+			const Eigen::Ref<const Eigen::VectorXd>& knots,
 			const Eigen::Index deg,
 			const double u0,
 			const double u1,
@@ -109,8 +109,8 @@ namespace na
 		}
 
 		Eigen::Vector3d curvature_binormal(
-			Eigen::Ref<const Eigen::MatrixXd> coefs,
-			Eigen::Ref<const Eigen::VectorXd> knots,
+			const Eigen::Ref<const Eigen::MatrixXd>& coefs,
+			const Eigen::Ref<const Eigen::VectorXd>& knots,
 			const Eigen::Index deg,
 			const double u)
 		{
@@ -122,8 +122,8 @@ namespace na
 		}
 
 		Eigen::Vector3d scaled_curvature_binormal(
-			Eigen::Ref<const Eigen::MatrixXd> coefs,
-			Eigen::Ref<const Eigen::VectorXd> knots,
+			const Eigen::Ref<const Eigen::MatrixXd>& coefs,
+			const Eigen::Ref<const Eigen::VectorXd>& knots,
 			const Eigen::Index deg,
 			const double u)
 		{

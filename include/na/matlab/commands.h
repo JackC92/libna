@@ -1,5 +1,7 @@
 #if !defined(NA_MATLAB_COMMANDS_H) && defined(NA_USE_MATLAB)
 #define NA_MATLAB_COMMANDS_H
+#include <cassert>
+#include <string>
 #include "MatlabDataArray.hpp"
 #include "MatlabEngine.hpp"
 #include "Eigen/Core"

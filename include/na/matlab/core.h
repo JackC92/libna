@@ -16,20 +16,18 @@ namespace na
 			MATLABSession(const std::u16string& name);
 			~MATLABSession();
 
-			MATLABSession& operator=(const MATLABSession& other);
-
-			::std::unique_ptr<::matlab::engine::MATLABEngine>& get_engine();
+			std::unique_ptr<::matlab::engine::MATLABEngine>& get_engine();
 			::matlab::data::Reference<::matlab::data::Struct> get_workspace();
 			void set_workspace();
 			void update_workspace();
-
+			
 			void update_variable(const std::string& name, const ::matlab::data::Array& value);
 
 		private:
 			void initialize();
 
 			std::unique_ptr<::matlab::engine::MATLABEngine> m_engine;
-			::matlab::data::StructArray m_workspace;
+			::matlab::data::Array m_workspace;
 		};
 	}
 }

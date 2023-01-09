@@ -94,7 +94,7 @@ namespace na
 			mat.diagonal().resize(static_cast<Eigen::Index>(std::min<std::size_t>(arr.getDimensions()[0], arr.getDimensions()[1])));
 			for (Eigen::Index i = 0; i < mat.rows(); ++i)
 			{
-				mat.diagonal()(i) = arr[i][i];
+				mat.diagonal().coeffRef(i) = arr[i][i];
 			}
 		}
 	}

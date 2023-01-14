@@ -1,6 +1,5 @@
 #ifndef NA_SPLINE_FIND_SPAN_H
 #define NA_SPLINE_FIND_SPAN_H
-#include <vector>
 #include "Eigen/Core"
 
 namespace na
@@ -8,14 +7,14 @@ namespace na
 	namespace spline
 	{
 		Eigen::Index find_span(
-			const Eigen::Ref<const Eigen::VectorXd>& knots,
+			const Eigen::Ref<const Eigen::ArrayXd>& knots,
 			const Eigen::Index degree,
 			const double u);
 
-		std::vector<Eigen::Index> find_span(
-			const Eigen::Ref<const Eigen::VectorXd>& knots,
+		Eigen::ArrayXi find_span(
+			const Eigen::Ref<const Eigen::ArrayXd>& knots,
 			const Eigen::Index degree,
-			const Eigen::Ref<const Eigen::VectorXd>& u);
+			const Eigen::Ref<const Eigen::ArrayXd>& u);
 	}
 }
 

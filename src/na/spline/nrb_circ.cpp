@@ -22,7 +22,7 @@ namespace na
 			}
 
 			Eigen::Index narcs;
-			Eigen::VectorXd knots;
+			Eigen::ArrayXd knots;
 			if (std::abs(sweep) <= M_PI_2)
 			{
 				narcs = 1;

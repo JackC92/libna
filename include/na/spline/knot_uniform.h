@@ -15,7 +15,7 @@ namespace na
 		//
 		// Output parameters:
 		//   knots: an open uniform knot vector
-		Eigen::VectorXd open_knots(
+		Eigen::ArrayXd open_knots(
 			const Eigen::Index number,
 			const Eigen::Index degree,
 			const Eigen::Index regularity);
@@ -28,7 +28,7 @@ namespace na
 		//
 		// Output parameters:
 		//   knots: a periodic uniform knot vector
-		Eigen::VectorXd periodic_knots(
+		Eigen::ArrayXd periodic_knots(
 			const Eigen::Index number,
 			const Eigen::Index degree);
 	}

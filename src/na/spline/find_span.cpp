@@ -1,5 +1,5 @@
 #include "na/spline/find_span.h"
-#include <vector>
+#include <cassert>
 #include "Eigen/Core"
 
 namespace na
@@ -7,23 +7,23 @@ namespace na
 	namespace spline
 	{
 		Eigen::Index find_span(
-			const Eigen::Ref<const Eigen::VectorXd>& knots,
-			const Eigen::Index degree,
+			const Eigen::Ref<const Eigen::ArrayXd>& knots,
+			const Eigen::Index deg,
 			const double u)
 		{
-			assert(((u >= knots(degree)) && (u <= *(knots.end() - degree - 1))) && "find_span: u is out of range");
+			assert(((u >= knots.coeffRef(deg)) && (u <= *(knots.end() - deg - 1))) && "find_span: u is out of range");
 
-			Eigen::Index n = knots.size() - degree - 1;
-			if (u == knots(n))
+			Eigen::Index n = knots.size() - deg - 2;
+			if (u == knots.coeffRef(n + 1))
 			{
-				return n - 1;
+				return n;
 			}
-			Eigen::Index low = degree;
-			Eigen::Index high = n;
+			Eigen::Index low = deg;
+			Eigen::Index high = n + 1;
 			Eigen::Index mid = (low + high) / 2;
-			while (u < knots(mid) || u >= knots(mid + 1))
+			while (u < knots.coeffRef(mid) || u >= knots.coeffRef(mid + 1))
 			{
-				if (u < knots(mid))
+				if (u < knots.coeffRef(mid))
 				{
 					high = mid;
 				}
@@ -35,19 +35,18 @@ namespace na
 			}
 			return mid;
 		}
-
-		std::vector<Eigen::Index> find_span(
-			const Eigen::Ref<const Eigen::VectorXd>& knots,
-			const Eigen::Index degree,
-			const Eigen::Ref<const Eigen::VectorXd>& u)
+		
+		Eigen::ArrayXi find_span(
+			const Eigen::Ref<const Eigen::ArrayXd>& knots, 
+			const Eigen::Index deg,
+			const Eigen::Ref<const Eigen::ArrayXd>& u)
 		{
-			std::vector<Eigen::Index> indices;
-			indices.reserve(u.size());
+			Eigen::ArrayXi span(u.size());
 			for (Eigen::Index i = 0; i < u.size(); ++i)
 			{
-				indices.emplace(indices.begin() + i, find_span(knots, degree, u(i)));
+				span.coeffRef(i) = find_span(knots, deg, u.coeffRef(i));
 			}
-			return indices;
+			return span;
 		}
 	}
 }

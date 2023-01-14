@@ -11,7 +11,7 @@ namespace na
 			const Eigen::Vector2d& start,
 			const Eigen::Vector2d& end)
 		{
-			Eigen::VectorXd knots = na::spline::open_knots(2, 1, 0);
+			Eigen::ArrayXd knots = na::spline::open_knots(2, 1, 0);
 			Eigen::MatrixXd coefs(2, 2);
 			coefs.row(0) = start;
 			coefs.row(1) = end;
@@ -22,7 +22,7 @@ namespace na
 			const Eigen::Vector3d& start,
 			const Eigen::Vector3d& end)
 		{
-			Eigen::VectorXd knots = na::spline::open_knots(2, 1, 0);
+			Eigen::ArrayXd knots = na::spline::open_knots(2, 1, 0);
 			Eigen::MatrixXd coefs(2, 3);
 			coefs.row(0) = start;
 			coefs.row(1) = end;

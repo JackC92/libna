@@ -1,5 +1,6 @@
 #ifndef NA_INTEGRATE_DOUBLE_INTEGRAL_H
 #define NA_INTEGRATE_DOUBLE_INTEGRAL_H
+#include <cmath>
 #include <functional>
 #include "Eigen/Core"
 #include "na/special/legendre.h"

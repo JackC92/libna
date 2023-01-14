@@ -72,7 +72,7 @@ namespace na
 			Eigen::VectorXcd roots = Eigen::VectorXcd::Zero(n);
 			Eigen::VectorXcd supdiag = Eigen::VectorXcd::Constant(n - 1, 0.5);
 			Eigen::VectorXcd p = Eigen::VectorXcd::Unit(n, n - 1);
-			Eigen::VectorXcd q = (-0.5 * coefs.segment(0, n) / coefs(n)).conjugate();
+			Eigen::VectorXcd q = (-0.5 * coefs.head(n) / coefs(n)).conjugate();
 			supdiag(0) = std::sqrt(0.5);
 			q(0) *= std::sqrt(2.0);
 			na::linalg::herm_p_rank1(roots, supdiag, p, q, n, eps);
@@ -113,7 +113,7 @@ namespace na
 				roots(nroots) = roots(i);
 				nroots += 1;
 			}
-			return roots.segment(0, nroots);
+			return roots.head(nroots);
 		}
 	}
 }

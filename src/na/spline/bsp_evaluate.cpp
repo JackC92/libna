@@ -93,7 +93,7 @@ namespace na
 		}
 
 		double length(
-			const Eigen::Ref<const Eigen::MatrixXd>& coefs, 
+			const Eigen::Ref<const Eigen::MatrixXd>& coefs,
 			const Eigen::Ref<const Eigen::ArrayXd>& knots,
 			const Eigen::Index deg,
 			const double u0,
@@ -107,8 +107,8 @@ namespace na
 		}
 
 		Eigen::Vector3d curvature_binormal(
-			const Eigen::Ref<const Eigen::MatrixXd>& coefs, 
-			const Eigen::Ref<const Eigen::ArrayXd>& knots, 
+			const Eigen::Ref<const Eigen::MatrixXd>& coefs,
+			const Eigen::Ref<const Eigen::ArrayXd>& knots,
 			const Eigen::Index deg,
 			const double u)
 		{
@@ -127,9 +127,9 @@ namespace na
 		{
 			assert((coefs.cols() == 3) && "scaled_curvature_binormal: coefs must be a matrix of size (n, 3)");
 
-			Eigen::Vector3d v1 = evaluate(coefs, knots, deg, 1, u).normalized();
+			Eigen::Vector3d v1 = evaluate(coefs, knots, deg, 1, u);
 			Eigen::Vector3d v2 = evaluate(coefs, knots, deg, 2, u);
-			return v1.cross(v2);
+			return v1.cross(v2) / v1.squaredNorm();
 		}
 	}
 }

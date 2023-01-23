@@ -7,7 +7,7 @@ namespace na
 {
 	namespace nurbs
 	{
-		NURBSEntity nrb_degelevate_curve(
+		NURBSEntity degelevate_curve(
 			const NURBSEntity& nrb,
 			const Eigen::Index t);
 	}

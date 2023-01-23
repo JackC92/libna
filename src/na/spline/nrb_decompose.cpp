@@ -8,7 +8,7 @@ namespace na
 {
 	namespace nurbs
 	{
-		std::vector<Eigen::MatrixX4d> nrb_decompose_curve(const NURBSEntity& nrb)
+		std::vector<Eigen::MatrixX4d> decompose_curve(const NURBSEntity& nrb)
 		{
 			Eigen::Index deg = nrb.degree()[0];
 			Eigen::Index size;

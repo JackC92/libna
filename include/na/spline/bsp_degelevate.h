@@ -6,7 +6,7 @@ namespace na
 {
 	namespace bspline
 	{
-		void bsp_degelevate(
+		void degelevate(
 			const Eigen::Ref<const Eigen::MatrixXd>& coefs,
 			const Eigen::Ref<const Eigen::ArrayXd>& knots,
 			const Eigen::Index degree,

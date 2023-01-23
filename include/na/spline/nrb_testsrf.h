@@ -6,7 +6,7 @@ namespace na
 {
 	namespace nurbs
 	{
-		NURBSEntity nrb_testsrf();
+		NURBSEntity testsrf();
 	}
 }
 

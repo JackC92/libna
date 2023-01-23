@@ -6,7 +6,7 @@ namespace na
 {
 	namespace nurbs
 	{
-		NURBSEntity nrb_testcrv()
+		NURBSEntity testcrv()
 		{
 			Eigen::ArrayXd knots(10);
 			Eigen::MatrixX3d coefs(7, 3);

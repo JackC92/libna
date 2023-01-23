@@ -7,7 +7,7 @@ namespace na
 {
 	namespace nurbs
 	{
-		NURBSEntity nrb_testsrf()
+		NURBSEntity testsrf()
 		{
 			Eigen::MatrixX3d coefs(25, 3);
 			coefs << 0.0, 0.0, 2.0,

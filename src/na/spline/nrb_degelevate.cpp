@@ -7,13 +7,13 @@ namespace na
 {
 	namespace nurbs
 	{
-		NURBSEntity nrb_degelevate_curve(
+		NURBSEntity degelevate_curve(
 			const NURBSEntity& nrb, 
 			const Eigen::Index t)
 		{
 			Eigen::ArrayXd knots;
 			Eigen::MatrixXd coefs;
-			na::bspline::bsp_degelevate(nrb.coefs(), nrb.knots()[0], nrb.degree()[0], t, coefs, knots);
+			na::bspline::degelevate(nrb.coefs(), nrb.knots()[0], nrb.degree()[0], t, coefs, knots);
 			return NURBSEntity(nrb.degree()[0] + t, coefs.rows(), knots, coefs);
 		}
 	}

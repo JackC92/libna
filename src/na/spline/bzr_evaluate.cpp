@@ -8,7 +8,7 @@ namespace na
 {
 	namespace bezier
 	{
-		Eigen::Vector3d bzr_evaluate(
+		Eigen::Vector3d evaluate(
 			const Eigen::Ref<const Eigen::MatrixX3d>& coefs,
 			const double u)
 		{
@@ -20,7 +20,7 @@ namespace na
 			return vec;
 		}
 		
-		Eigen::Vector3d bzr_evaluate(
+		Eigen::Vector3d evaluate(
 			const Eigen::Ref<const Eigen::MatrixX4d>& coefs,
 			const double u)
 		{

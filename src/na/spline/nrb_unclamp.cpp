@@ -6,7 +6,7 @@ namespace na
 {
 	namespace nurbs
 	{
-		NURBSEntity nrb_unclamp_curve(
+		NURBSEntity unclamp_curve(
 			const NURBSEntity& nrb,
 			const Eigen::Index k)
 		{

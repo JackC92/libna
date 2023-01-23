@@ -7,7 +7,7 @@ namespace na
 {
 	namespace nurbs
 	{
-		void nrb_tessellate(
+		void tessellate(
 			const NURBSEntity& nrb,
 			Eigen::MatrixX3d& V,
 			const Eigen::Index npts)
@@ -19,7 +19,7 @@ namespace na
 			}
 		}
 
-		void nrb_tessellate(
+		void tessellate(
 			const NURBSEntity& nrb,
 			Eigen::MatrixX3d& V, 
 			Eigen::MatrixX3i& F, 

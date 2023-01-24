@@ -1,12 +1,12 @@
-#ifndef NA_SPLINE_BSP_REFINE_H
-#define NA_SPLINE_BSP_REFINE_H
+#ifndef NA_SPLINE_BSP_KNTREFINE_H
+#define NA_SPLINE_BSP_KNTREFINE_H
 #include "Eigen/Core"
 
 namespace na
 {
 	namespace bspline
 	{
-		void refine_curve(
+		void kntrefine_curve(
 			const Eigen::Ref<const Eigen::MatrixXd>& coefs,
 			const Eigen::Ref<const Eigen::ArrayXd>& knots,
 			const Eigen::Index degree,
@@ -16,4 +16,4 @@ namespace na
 	}
 }
 
-#endif // !NA_SPLINE_BSP_REFINE_H
+#endif // !NA_SPLINE_BSP_KNTREFINE_H

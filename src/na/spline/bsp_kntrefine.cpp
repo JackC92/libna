@@ -1,4 +1,4 @@
-#include "na/spline/bsp_refine.h"
+#include "na/spline/bsp_kntrefine.h"
 #include <cmath>
 #include "Eigen/Core"
 #include "na/spline/find_span.h"
@@ -7,7 +7,7 @@ namespace na
 {
 	namespace bspline
 	{
-		void refine_curve(
+		void kntrefine_curve(
 			const Eigen::Ref<const Eigen::MatrixXd>& coefs,
 			const Eigen::Ref<const Eigen::ArrayXd>& knots,
 			const Eigen::Index deg,

@@ -13,9 +13,12 @@ namespace na
 			const Eigen::Index npts)
 		{
 			V.resize(npts, 3);
+			double u0 = nrb.knots()[0].coeffRef(nrb.degree()[0]);
+			double u1 = nrb.knots()[0].coeffRef(nrb.number()[0]);
 			for (Eigen::Index i = 0; i < npts; ++i)
 			{
-				V.row(i) = evaluate(nrb, static_cast<double>(i) / (npts - 1.0));
+				double u = u0 + static_cast<double>(i) / (npts - 1.0) * (u1 - u0);
+				V.row(i) = evaluate(nrb, u);
 			}
 		}
 

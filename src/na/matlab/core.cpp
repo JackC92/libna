@@ -1,4 +1,5 @@
 #include "na/matlab/core.h"
+#ifdef NA_MATLAB_CORE_H
 #include <memory>
 #include <string>
 #include "MatlabDataArray.hpp"
@@ -64,3 +65,5 @@ namespace na
 		}
 	}
 }
+
+#endif // NA_MATLAB_CORE_H

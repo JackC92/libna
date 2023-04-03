@@ -1,0 +1,33 @@
+---
+Language: Cpp
+AlignAfterOpenBracket: Align
+AlignArrayOfStructures: Right
+AlignOperands: true
+AllowShortBlocksOnASingleLine: Empty
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AlwaysBreakTemplateDeclarations: Yes
+BinPackParameters: false
+BreakBeforeBraces: Allman
+ColumnLimit: 120
+Cpp11BracedListStyle: false
+FixNamespaceComments: true
+IncludeCategories:
+  - Regex: '^"na/'
+    Priority: 1
+  - Regex: '"\w+([\.\/]\w+)*"'
+    Priority: 2
+  - Regex: '<\w+>'
+    Priority: 3
+IncludeIsMainRegex: '^(test_)?'
+IndentAccessModifiers: false
+IndentWidth: 4
+NamespaceIndentation: All
+PenaltyReturnTypeOnItsOwnLine: 100
+PointerAlignment: Right
+ShortNamespaceLines: 0
+Standard: c++17
+TabWidth: 4
+UseTab: Never
+...

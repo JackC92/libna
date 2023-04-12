@@ -1,5 +1,6 @@
 ---
 Language: Cpp
+AccessModifierOffset: -4
 AlignAfterOpenBracket: Align
 AlignArrayOfStructures: Right
 AlignOperands: true
@@ -20,7 +21,6 @@ IncludeCategories:
     Priority: 2
   - Regex: '<\w+>'
     Priority: 3
-IncludeIsMainRegex: '^(test_)?'
 IndentAccessModifiers: false
 IndentWidth: 4
 NamespaceIndentation: All

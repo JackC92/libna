@@ -36,12 +36,12 @@ add_subdirectory("external/googletest")
 if (CMAKE_CUDA_COMPILER)
     file(GLOB_RECURSE HEADER_FILES FOLLOW_SYMLINKS include/*.h include/*.cuh)
     file(GLOB_RECURSE SRC_FILES FOLLOW_SYMLINKS src/*.c src/*.cpp src/*.cu src/.*f)
-    file(GLOB_RECURSE TEST_FILES tests.cpp tests/*.h tests/*.cuh tests/test_*.cpp tests/test_*.cu)
+    file(GLOB_RECURSE TEST_FILES tests.cpp tests/*.h tests/*.cuh tests/*_test.cpp tests/*_test.cu)
     file(GLOB DRIVER_FILE libna.cpp libna.cu)
 else()
     file(GLOB_RECURSE HEADER_FILES FOLLOW_SYMLINKS include/*.h)
     file(GLOB_RECURSE SRC_FILES FOLLOW_SYMLINKS src/*.c src/*.cpp src/*.f)
-    file(GLOB_RECURSE TEST_FILES tests.cpp tests/*.h tests/test_*.cpp)
+    file(GLOB_RECURSE TEST_FILES tests.cpp tests/*.h tests/*_test.cpp)
     file(GLOB DRIVER_FILE libna.cpp)
 endif()
 
@@ -85,7 +85,7 @@ endif()
 
 if (WITH_MKL)
     # Eigen requires the LP64 interface
-    set(MKL_INTERFACE_FULL "intel_lp64")
+    set(MKL_INTERFACE "lp64")
     add_definitions(-DEIGEN_USE_MKL_ALL)
     
     find_package(MKL REQUIRED CONFIG)

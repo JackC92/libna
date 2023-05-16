@@ -9,6 +9,7 @@ AllowShortFunctionsOnASingleLine: None
 AllowShortIfStatementsOnASingleLine: Never
 AllowShortLoopsOnASingleLine: false
 AlwaysBreakTemplateDeclarations: Yes
+BinPackArguments: false
 BinPackParameters: false
 BreakBeforeBraces: Allman
 ColumnLimit: 120

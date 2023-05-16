@@ -6,22 +6,32 @@ set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 set(CMAKE_CUDA_ARCHITECTURES "native")
 set(CMAKE_NO_SYSTEM_FROM_IMPORTED 1) # include directories using -i instead of -isystem
 
-project("NumericalAlgorithms" LANGUAGES C CXX Fortran)
-
-include(CheckLanguage)
-check_language(CUDA)
-if (CMAKE_CUDA_COMPILER)
-    enable_language(CUDA)
-endif()
+project("NumericalAlgorithms" LANGUAGES C CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
 option(WITH_CHOLMOD "Build with CHOLMOD" OFF)
+option(WITH_CUDA "Build with CUDA" ON)
 option(WITH_MATLAB "Build with MATLAB" OFF)
 option(WITH_MKL "Build with Intel MKL" ON)
 option(WITH_OPENMP "Build with OpenMP" ON)
 option(WITH_TORCH "Build with PyTorch" OFF)
 option(WITH_TENSORFLOW "Build with TensorFlow" OFF)
+
+set(_linked_targets "")
+set(_CUDA_flags "")
+
+include(CheckLanguage)
+check_language(CUDA)
+if (CMAKE_CUDA_COMPILER AND WITH_CUDA)
+    enable_language(CUDA)
+    
+    list(APPEND _CUDA_flags ${CMAKE_CUDA_FLAGS})
+    list(APPEND _CUDA_flags "--expt-relaxed-constexpr")
+    list(APPEND _CUDA_flags "--extended-lambda")
+    list(JOIN _CUDA_flags " " _CUDA_flags)
+    set(CMAKE_CUDA_FLAGS ${_CUDA_flags})
+endif()
 
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
@@ -33,7 +43,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 add_subdirectory("external/googletest")
 
-if (CMAKE_CUDA_COMPILER)
+if (CMAKE_CUDA_COMPILER AND WITH_CUDA)
     file(GLOB_RECURSE HEADER_FILES FOLLOW_SYMLINKS include/*.h include/*.cuh)
     file(GLOB_RECURSE SRC_FILES FOLLOW_SYMLINKS src/*.c src/*.cpp src/*.cu src/.*f)
     file(GLOB_RECURSE TEST_FILES tests.cpp tests/*.h tests/*.cuh tests/*_test.cpp tests/*_test.cu)
@@ -54,6 +64,8 @@ add_executable(tests ${TEST_FILES})
 
 set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT libna)
 set_target_properties(core PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(core libna PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+set_target_properties(core libna PROPERTIES CUDA_RESOLVE_DEVICE_SYMBOLS ON)
 
 target_link_libraries(libna PRIVATE core)
 target_link_libraries(tests PRIVATE core gtest gtest_main)
@@ -68,12 +80,18 @@ target_link_libraries(core PUBLIC Eigen3::Eigen)
 find_package(TBB REQUIRED CONFIG)
 target_link_libraries(core PUBLIC TBB::tbb)
 
-set(_linked_targets "")
 if (WITH_CHOLMOD)
     find_package(SuiteSparse REQUIRED CONFIG)
     target_link_libraries(core PUBLIC SuiteSparse::cholmod)
     
     list(APPEND _linked_targets "CHOLMOD")
+endif()
+
+if (WITH_CUDA)
+    find_package(CUDAToolkit)
+    target_link_libraries(core PUBLIC CUDA::curand)
+    
+    list(APPEND _linked_targets "CUDA")
 endif()
 
 if (WITH_MATLAB)

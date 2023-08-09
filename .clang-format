@@ -18,10 +18,12 @@ FixNamespaceComments: true
 IncludeCategories:
   - Regex: '^"na/'
     Priority: 1
-  - Regex: '"\w+([\.\/]\w+)*"'
+  - Regex: '^"driver/'
     Priority: 2
-  - Regex: '<\w+>'
+  - Regex: '"\w+([\.\/]\w+)*"'
     Priority: 3
+  - Regex: '<\w+>'
+    Priority: 4
 IndentAccessModifiers: false
 IndentWidth: 4
 NamespaceIndentation: All

@@ -18,6 +18,8 @@ option(WITH_OPENMP "Build with OpenMP" ON)
 option(WITH_TORCH "Build with PyTorch" OFF)
 option(WITH_TENSORFLOW "Build with TensorFlow" OFF)
 
+option(LIBIGL_RESTRICTED_TRIANGLE "Build target igl_restricted::triangle" ON)
+
 set(_CUDA_flags "")
 set(_linked_targets "")
 
@@ -51,14 +53,14 @@ add_subdirectory("external/polyscope"       EXCLUDE_FROM_ALL)
 
 if (CMAKE_CUDA_COMPILER AND WITH_CUDA)
     file(GLOB_RECURSE HEADER_FILES FOLLOW_SYMLINKS include/na/*.h include/na/*.cuh)
-    file(GLOB_RECURSE SRC_FILES FOLLOW_SYMLINKS src/na/*.c src/na/*.cpp src/na/*.cu src/.na/*f)
+    file(GLOB_RECURSE SRC_FILES FOLLOW_SYMLINKS src/na/*.c src/na/*.cpp src/na/*.cu src/na/*f)
     file(GLOB_RECURSE TEST_FILES tests.cpp tests/na/*.h tests/na/*.cuh tests/na/*_test.cpp tests/na/*_test.cu)
-    file(GLOB DRIVER_FILE libna.cpp libna.cu)
+    file(GLOB_RECURSE DRIVER_FILE libna.cpp libna.cu include/driver/*.h include/driver/*.cuh src/driver/*.c src/driver/*.cpp src/driver/*.cu src/driver/*f)
 else()
     file(GLOB_RECURSE HEADER_FILES FOLLOW_SYMLINKS include/na/*.h)
     file(GLOB_RECURSE SRC_FILES FOLLOW_SYMLINKS src/na/*.c src/na/*.cpp src/na/*.f)
     file(GLOB_RECURSE TEST_FILES tests.cpp tests/na/*.h tests/na/*_test.cpp)
-    file(GLOB DRIVER_FILE libna.cpp)
+    file(GLOB_RECURSE DRIVER_FILE libna.cpp include/driver/*.h src/driver/*.c src/driver/*.cpp src/driver/*.f)
 endif()
 
 include(MSVCFilter)
@@ -69,14 +71,15 @@ add_executable(libna ${DRIVER_FILE})
 add_executable(tests ${TEST_FILES})
 
 set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT libna)
-set_target_properties(core PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(core libna PROPERTIES LINKER_LANGUAGE CXX)
 set_target_properties(core libna PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 set_target_properties(core libna PROPERTIES CUDA_RESOLVE_DEVICE_SYMBOLS ON)
 
-target_link_libraries(libna PRIVATE core fmt::fmt igl::core imgui_filedialog implot matplotlib_cpp polyscope)
+target_link_libraries(libna PRIVATE core fmt::fmt igl::core triangle::triangle imgui_filedialog implot matplotlib_cpp polyscope)
 target_link_libraries(tests PRIVATE core gtest gtest_main)
 
 target_include_directories(core PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+target_include_directories(libna PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/external/ImGuiFileDialog")
 target_include_directories(tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/external/googletest/googlemock/include")
 target_include_directories(tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/external/googletest/googletest/include")
 

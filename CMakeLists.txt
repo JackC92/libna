@@ -10,12 +10,12 @@ project("NumericalAlgorithms" LANGUAGES C CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
-option(WITH_CHOLMOD "Build with CHOLMOD" OFF)
-option(WITH_CUDA "Build with CUDA" OFF)
-option(WITH_MATLAB "Build with MATLAB" OFF)
-option(WITH_MKL "Build with Intel MKL" ON)
-option(WITH_OPENMP "Build with OpenMP" ON)
-option(WITH_TORCH "Build with PyTorch" OFF)
+option(WITH_CHOLMOD    "Build with CHOLMOD"    OFF)
+option(WITH_CUDA       "Build with CUDA"       OFF)
+option(WITH_MATLAB     "Build with MATLAB"     OFF)
+option(WITH_MKL        "Build with Intel MKL"  ON)
+option(WITH_OPENMP     "Build with OpenMP"     ON)
+option(WITH_TORCH      "Build with PyTorch"    OFF)
 option(WITH_TENSORFLOW "Build with TensorFlow" OFF)
 
 option(LIBIGL_RESTRICTED_TRIANGLE "Build target igl_restricted::triangle" ON)

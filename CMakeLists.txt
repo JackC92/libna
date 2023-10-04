@@ -43,14 +43,6 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-add_subdirectory("external/fmt"             EXCLUDE_FROM_ALL)
-add_subdirectory("external/googletest"      EXCLUDE_FROM_ALL)
-add_subdirectory("external/ImGuiFileDialog" EXCLUDE_FROM_ALL)
-add_subdirectory("external/implot"          EXCLUDE_FROM_ALL)
-add_subdirectory("external/libigl"          EXCLUDE_FROM_ALL)
-add_subdirectory("external/matplotlib-cpp"  EXCLUDE_FROM_ALL)
-add_subdirectory("external/polyscope"       EXCLUDE_FROM_ALL)
-
 if (CMAKE_CUDA_COMPILER AND WITH_CUDA)
     file(GLOB_RECURSE HEADER_FILES FOLLOW_SYMLINKS include/na/*.h include/na/*.cuh)
     file(GLOB_RECURSE SRC_FILES FOLLOW_SYMLINKS src/na/*.c src/na/*.cpp src/na/*.cu src/na/*f)
@@ -75,19 +67,25 @@ set_target_properties(core libna PROPERTIES LINKER_LANGUAGE CXX)
 set_target_properties(core libna PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 set_target_properties(core libna PROPERTIES CUDA_RESOLVE_DEVICE_SYMBOLS ON)
 
-target_link_libraries(libna PRIVATE core fmt::fmt igl::core triangle::triangle imgui_filedialog implot matplotlib_cpp polyscope)
-target_link_libraries(tests PRIVATE core gtest gtest_main)
-
 target_include_directories(core PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_include_directories(libna PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/external/ImGuiFileDialog")
 target_include_directories(tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/external/googletest/googlemock/include")
 target_include_directories(tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/external/googletest/googletest/include")
 
-find_package(Eigen3 3.4 REQUIRED CONFIG)
-target_link_libraries(core PUBLIC Eigen3::Eigen)
-
+find_package(Eigen3 3.4 REQUIRED CONFIG) # calling before libigl to use custom version of Eigen, otherwise libigl fetches Eigen at tags/3.4.0
 find_package(TBB REQUIRED CONFIG)
-target_link_libraries(core PUBLIC TBB::tbb)
+
+add_subdirectory("external/fmt"             EXCLUDE_FROM_ALL)
+add_subdirectory("external/googletest"      EXCLUDE_FROM_ALL)
+add_subdirectory("external/ImGuiFileDialog" EXCLUDE_FROM_ALL)
+add_subdirectory("external/implot"          EXCLUDE_FROM_ALL)
+add_subdirectory("external/libigl"          EXCLUDE_FROM_ALL)
+add_subdirectory("external/matplotlib-cpp"  EXCLUDE_FROM_ALL)
+add_subdirectory("external/polyscope"       EXCLUDE_FROM_ALL)
+
+target_link_libraries(core PUBLIC Eigen3::Eigen TBB::tbb)
+target_link_libraries(libna PRIVATE core fmt::fmt igl::core triangle::triangle imgui_filedialog implot matplotlib_cpp polyscope)
+target_link_libraries(tests PRIVATE core gtest gtest_main)
 
 if (WITH_CHOLMOD)
     find_package(SuiteSparse REQUIRED CONFIG)
@@ -98,7 +96,7 @@ endif()
 
 if (WITH_CUDA)
     find_package(CUDAToolkit)
-    target_link_libraries(core PUBLIC CUDA::curand)
+    target_link_libraries(core PUBLIC CUDA::cublas CUDA::curand CUDA::cusolver)
     
     list(APPEND _linked_targets "CUDA")
 endif()

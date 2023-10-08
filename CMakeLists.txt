@@ -136,7 +136,7 @@ endif()
 
 if (WITH_TENSORFLOW)
     find_package(TensorFlow REQUIRED CONFIG)
-    target_link_libraries(core PUBLIC TensorFlow::tensorflow)
+    target_link_libraries(core PUBLIC TensorFlow::TensorFlow)
     
     list(APPEND _linked_targets "TENSORFLOW")
 endif()

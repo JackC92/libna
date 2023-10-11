@@ -13,18 +13,15 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 option(WITH_CHOLMOD    "Build with CHOLMOD"    OFF)
 option(WITH_CUDA       "Build with CUDA"       OFF)
 option(WITH_MATLAB     "Build with MATLAB"     OFF)
-option(WITH_MKL        "Build with Intel MKL"  ON)
-option(WITH_OPENMP     "Build with OpenMP"     ON)
+option(WITH_MKL        "Build with Intel MKL"   ON)
+option(WITH_OPENMP     "Build with OpenMP"      ON)
 option(WITH_TORCH      "Build with PyTorch"    OFF)
 option(WITH_TENSORFLOW "Build with TensorFlow" OFF)
 
-option(LIBIGL_RESTRICTED_TRIANGLE "Build target igl_restricted::triangle" ON)
-
-set(_CUDA_flags "")
-set(_linked_targets "")
-
 include(CheckLanguage)
 check_language(CUDA)
+
+set(_CUDA_flags "")
 if (CMAKE_CUDA_COMPILER AND WITH_CUDA)
     enable_language(CUDA)
     
@@ -56,6 +53,7 @@ else()
 endif()
 
 include(MSVCFilter)
+include(CCache)
 include(CompilerOptions)
 
 add_library(core ${HEADER_FILES} ${SRC_FILES})
@@ -75,6 +73,7 @@ target_include_directories(tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/external/g
 find_package(Eigen3 3.4 REQUIRED CONFIG) # calling before libigl to use custom version of Eigen, otherwise libigl fetches Eigen at tags/3.4.0
 find_package(TBB REQUIRED CONFIG)
 
+add_subdirectory("external/autodiff"        EXCLUDE_FROM_ALL)
 add_subdirectory("external/fmt"             EXCLUDE_FROM_ALL)
 add_subdirectory("external/googletest"      EXCLUDE_FROM_ALL)
 add_subdirectory("external/ImGuiFileDialog" EXCLUDE_FROM_ALL)
@@ -83,9 +82,11 @@ add_subdirectory("external/libigl"          EXCLUDE_FROM_ALL)
 add_subdirectory("external/matplotlib-cpp"  EXCLUDE_FROM_ALL)
 add_subdirectory("external/polyscope"       EXCLUDE_FROM_ALL)
 
-target_link_libraries(core PUBLIC Eigen3::Eigen TBB::tbb)
-target_link_libraries(libna PRIVATE core fmt::fmt igl::core triangle::triangle imgui_filedialog implot matplotlib_cpp polyscope)
+target_link_libraries(core PUBLIC autodiff Eigen3::Eigen TBB::tbb)
+target_link_libraries(libna PRIVATE core fmt igl::core imgui_filedialog implot matplotlib_cpp polyscope)
 target_link_libraries(tests PRIVATE core gtest gtest_main)
+
+set(_linked_targets "")
 
 if (WITH_CHOLMOD)
     find_package(SuiteSparse REQUIRED CONFIG)
@@ -142,5 +143,6 @@ if (WITH_TENSORFLOW)
 endif()
 
 foreach(_linked_target IN LISTS _linked_targets)
+    string(TOUPPER ${_linked_target} _linked_target)
     add_definitions("-DNA_USE_${_linked_target}")
 endforeach()

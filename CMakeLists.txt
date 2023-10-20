@@ -74,6 +74,7 @@ find_package(Eigen3 3.4 REQUIRED CONFIG) # calling before libigl to use custom v
 find_package(TBB REQUIRED CONFIG)
 
 add_subdirectory("external/autodiff"        EXCLUDE_FROM_ALL)
+add_subdirectory("external/fast_float"      EXCLUDE_FROM_ALL)
 add_subdirectory("external/fmt"             EXCLUDE_FROM_ALL)
 add_subdirectory("external/googletest"      EXCLUDE_FROM_ALL)
 add_subdirectory("external/ImGuiFileDialog" EXCLUDE_FROM_ALL)
@@ -82,8 +83,8 @@ add_subdirectory("external/libigl"          EXCLUDE_FROM_ALL)
 add_subdirectory("external/matplotlib-cpp"  EXCLUDE_FROM_ALL)
 add_subdirectory("external/polyscope"       EXCLUDE_FROM_ALL)
 
-target_link_libraries(core PUBLIC autodiff Eigen3::Eigen TBB::tbb)
-target_link_libraries(libna PRIVATE core fmt igl::core imgui_filedialog implot matplotlib_cpp polyscope)
+target_link_libraries(core PUBLIC autodiff Eigen3::Eigen fast_float fmt TBB::tbb)
+target_link_libraries(libna PRIVATE core igl::core imgui_filedialog implot matplotlib_cpp polyscope)
 target_link_libraries(tests PRIVATE core gtest gtest_main)
 
 set(_linked_targets "")

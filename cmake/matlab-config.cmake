@@ -1,4 +1,4 @@
-# This minimal CMake Config Mode file for imporing MATLAB can be used anywhere if the environment variable MATLABROOT is set.
+# This minimal CMake Config Mode file for importing MATLAB can be used anywhere if the environment variable MATLABROOT is set.
 add_library(Matlab::Engine UNKNOWN IMPORTED)
 set_target_properties(Matlab::Engine PROPERTIES
     INTERFACE_INCLUDE_DIRECTORIES "$ENV{MATLABROOT}/extern/include"

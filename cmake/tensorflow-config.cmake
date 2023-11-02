@@ -1,4 +1,4 @@
-# This minimal CMake Config Mode file for imporing TensorFlow should be copied to the root of the libtensorflow-(cpu|gpu) folder
+# This minimal CMake Config Mode file for importing TensorFlow should be copied to the root of the libtensorflow-(cpu|gpu) folder
 get_filename_component(_TensorFlow_PATH "${CMAKE_CURRENT_LIST_FILE}" PATH)
 
 set(_TensorFlow_INCLUDE_DIRS "${_TensorFlow_PATH}/include")

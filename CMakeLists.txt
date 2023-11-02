@@ -8,12 +8,15 @@ set(CMAKE_NO_SYSTEM_FROM_IMPORTED 1) # include directories using -i instead of -
 
 project("NumericalAlgorithms" LANGUAGES C CXX)
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+list(APPEND CMAKE_MODULE_PATH
+    "${CMAKE_CURRENT_LIST_DIR}/cmake"
+    "${CMAKE_CURRENT_LIST_DIR}/cmake/modules")
 
 option(WITH_CHOLMOD    "Build with CHOLMOD"    OFF)
 option(WITH_CUDA       "Build with CUDA"       OFF)
 option(WITH_MATLAB     "Build with MATLAB"     OFF)
 option(WITH_MKL        "Build with Intel MKL"   ON)
+option(WITH_MOSEK      "Build with Mosek"      OFF)
 option(WITH_OPENMP     "Build with OpenMP"      ON)
 option(WITH_TORCH      "Build with PyTorch"    OFF)
 option(WITH_TENSORFLOW "Build with TensorFlow" OFF)
@@ -108,8 +111,9 @@ if (WITH_CUDA)
 endif()
 
 if (WITH_MATLAB)
-    find_package(MATLAB REQUIRED CONFIG)
-    target_link_libraries(core PUBLIC MATLAB::matlab)
+    find_package(MATLAB REQUIRED)
+    target_link_libraries(core PUBLIC ${Matlab_LIBRARIES})
+	target_include_directories(core PUBLIC ${Matlab_INCLUDE_DIRS})
     
     list(APPEND _linked_targets "MATLAB")
 endif()
@@ -127,9 +131,19 @@ if (WITH_MKL)
     list(APPEND _linked_targets "MKL")
 endif()
 
+if (WITH_MOSEK)
+    find_package(MOSEK REQUIRED)
+	target_link_libraries(core PUBLIC ${MOSEK_LIBRARY})
+	target_include_directories(core PUBLIC ${MOSEK_INCLUDE_DIR})
+	
+	list(APPEND _linked_targets "MOSEK")
+endif()
+
 if (WITH_OPENMP)
     find_package(OpenMP REQUIRED)
     target_link_libraries(core PUBLIC $<$<CONFIG:Release>:OpenMP::OpenMP_CXX>)
+	
+	list(APPEND _linked_targets "OPENMP")
 endif()
 
 if (WITH_TORCH)

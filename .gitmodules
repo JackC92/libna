@@ -20,5 +20,5 @@
 	path = external/matplotlib-cpp
 	url = https://github.com/jackc92/matplotlib-cpp.git
 [submodule "external/fast_float"]
-	path = external/fast_float
+	path = external/fast_float/fast_float
 	url = https://github.com/fastfloat/fast_float.git

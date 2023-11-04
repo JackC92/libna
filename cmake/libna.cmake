@@ -115,4 +115,4 @@ include(MSVCFilter)
 
 target_sources(core PRIVATE ${LIBNA_HEADER_FILES} ${LIBNA_SOURCE_FILES})
 target_sources(libna PRIVATE ${LIBNA_MAIN_FILE})
-target_include_directories(core INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/include")
+target_include_directories(core PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")

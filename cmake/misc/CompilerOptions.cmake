@@ -7,7 +7,6 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STR
     message(STATUS "Using Clang/gcc compiler flags")
     set(BASE_CXX_FLAGS "-std=c++17 -Wall -Wextra -g3")
     set(DISABLED_WARNINGS " -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-deprecated-declarations -Wno-missing-braces")
-    set(TRACE_INCLUDES " -H -Wno-error=unused-command-line-argument")
     
     if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
         message(STATUS "Setting Clang specific options")
@@ -20,7 +19,6 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STR
     endif()
     
     set(CMAKE_CXX_FLAGS "${BASE_CXX_FLAGS} ${DISABLED_WARNINGS}")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TRACE_INCLUDES}") # uncomment if you need to track down where something is getting included from
     set(CMAKE_CXX_FLAGS_DEBUG          "${CMAKE_CXX_FLAGS_DEBUG} -g3")
     set(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
     set(CMAKE_CXX_FLAGS_RELEASE        "-O3 -DNDEBUG -march=native")
@@ -35,7 +33,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     set(DISABLED_WARNINGS "${DISABLED_WARNINGS} /wd\"4267\"")  # ignore conversion to smaller type (fires more aggressively than the gcc version, which is annoying)
     set(DISABLED_WARNINGS "${DISABLED_WARNINGS} /wd\"4244\"")  # ignore conversion to smaller type (fires more aggressively than the gcc version, which is annoying)
     set(DISABLED_WARNINGS "${DISABLED_WARNINGS} /wd\"4305\"")  # ignore truncation on initialization
-    set(CMAKE_CXX_FLAGS "${BASE_CXX_FLAGS} ${CXX_AVX2_FLAGS} ${DISABLED_WARNINGS}")
+    set(CMAKE_CXX_FLAGS "${BASE_CXX_FLAGS} ${DISABLED_WARNINGS} /arch:AVX2")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MD")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
     

@@ -19,8 +19,9 @@ set(LIBNA_MAIN_FILE "libna.cpp")
 set(_linked_targets "")
 
 if(WITH_CHOLMOD)
-    find_package(SuiteSparse REQUIRED CONFIG)
-    target_link_libraries(core PUBLIC SuiteSparse::cholmod)
+    find_package(SuiteSparse_config REQUIRED CONFIG)
+    find_package(CHOLMOD REQUIRED CONFIG)
+    target_link_libraries(core PUBLIC SuiteSparse::CHOLMOD)
     
     list(APPEND _linked_targets "CHOLMOD")
 endif()

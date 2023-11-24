@@ -11,10 +11,13 @@ add_subdirectory("external/polyscope"       EXCLUDE_FROM_ALL)
 
 target_link_libraries(core PUBLIC Eigen3::Eigen fast_float fmt)
 target_link_libraries(libna PRIVATE core igl::core imgui_filedialog implot matplotlib_cpp polyscope)
+target_link_libraries(tests PRIVATE core gtest gtest_main)
 
 set(LIBNA_HEADER_FILES "")
 set(LIBNA_SOURCE_FILES "")
+set(LIBNA_TEST_FILES "")
 set(LIBNA_MAIN_FILE "libna.cpp")
+set(LIBNA_TEST_FILE "tests.cpp")
 
 set(_linked_targets "")
 
@@ -111,9 +114,11 @@ foreach(_linked_target IN LISTS _linked_targets)
 endforeach()
 
 na_include(core)
+na_include(core_test)
 
 include(MSVCFilter)
 
 target_sources(core PRIVATE ${LIBNA_HEADER_FILES} ${LIBNA_SOURCE_FILES})
 target_sources(libna PRIVATE ${LIBNA_MAIN_FILE})
+target_sources(tests PRIVATE ${LIBNA_TEST_FILE} ${LIBNA_TEST_FILES})
 target_include_directories(core PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")

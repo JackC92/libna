@@ -33,6 +33,7 @@ include(CompilerOptions)
 
 add_library(core)
 add_executable(libna)
+add_executable(tests)
 
 set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT libna)
 set_target_properties(core libna PROPERTIES LINKER_LANGUAGE CXX)

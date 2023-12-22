@@ -29,7 +29,7 @@ IncludeCategories:
 IndentAccessModifiers: false
 IndentWidth: 4
 NamespaceIndentation: All
-PenaltyReturnTypeOnItsOwnLine: 100
+PenaltyReturnTypeOnItsOwnLine: 1000
 PointerAlignment: Right
 ShortNamespaceLines: 0
 Standard: c++17

@@ -8,8 +8,9 @@ add_subdirectory("external/implot"          EXCLUDE_FROM_ALL)
 add_subdirectory("external/libigl"          EXCLUDE_FROM_ALL)
 add_subdirectory("external/matplotlib-cpp"  EXCLUDE_FROM_ALL)
 add_subdirectory("external/polyscope"       EXCLUDE_FROM_ALL)
+add_subdirectory("external/tinyad"          EXCLUDE_FROM_ALL)
 
-target_link_libraries(core PUBLIC Eigen3::Eigen fast_float fmt)
+target_link_libraries(core PUBLIC Eigen3::Eigen fast_float fmt TinyAD)
 target_link_libraries(libna PRIVATE core igl::core imgui_filedialog implot matplotlib_cpp polyscope)
 target_link_libraries(tests PRIVATE core gtest gtest_main)
 

@@ -22,3 +22,6 @@
 [submodule "external/fast_float"]
 	path = external/fast_float/fast_float
 	url = https://github.com/fastfloat/fast_float.git
+[submodule "external/tinyad"]
+	path = external/tinyad
+	url = https://github.com/patr-schm/TinyAD.git

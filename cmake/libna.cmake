@@ -1,18 +1,19 @@
 find_package(Eigen3 3.4 REQUIRED CONFIG) # calling before libigl to use custom version of Eigen, otherwise libigl fetches Eigen at tags/3.4.0
 
+add_subdirectory("external/catch2"          EXCLUDE_FROM_ALL)
 add_subdirectory("external/fast_float"      EXCLUDE_FROM_ALL)
 add_subdirectory("external/fmt"             EXCLUDE_FROM_ALL)
-add_subdirectory("external/googletest"      EXCLUDE_FROM_ALL)
 add_subdirectory("external/ImGuiFileDialog" EXCLUDE_FROM_ALL)
 add_subdirectory("external/implot"          EXCLUDE_FROM_ALL)
 add_subdirectory("external/libigl"          EXCLUDE_FROM_ALL)
 add_subdirectory("external/matplotlib-cpp"  EXCLUDE_FROM_ALL)
 add_subdirectory("external/polyscope"       EXCLUDE_FROM_ALL)
+add_subdirectory("external/spectra"         EXCLUDE_FROM_ALL)
 add_subdirectory("external/tinyad"          EXCLUDE_FROM_ALL)
 
-target_link_libraries(core PUBLIC Eigen3::Eigen fast_float fmt TinyAD)
+target_link_libraries(core PUBLIC Eigen3::Eigen fast_float fmt Spectra TinyAD)
 target_link_libraries(libna PRIVATE core igl::core imgui_filedialog implot matplotlib_cpp polyscope)
-target_link_libraries(tests PRIVATE core gtest gtest_main)
+target_link_libraries(tests PRIVATE core Catch2::Catch2WithMain)
 
 set(LIBNA_HEADER_FILES "")
 set(LIBNA_SOURCE_FILES "")
@@ -67,6 +68,7 @@ endif()
 if(WITH_MKL)
     # Eigen requires the LP64 interface
     set(MKL_INTERFACE "lp64")
+    set(MKL_THREADING "sequential")
     
     find_package(MKL REQUIRED CONFIG)
     target_link_libraries(core PUBLIC $<LINK_ONLY:MKL::MKL>)
